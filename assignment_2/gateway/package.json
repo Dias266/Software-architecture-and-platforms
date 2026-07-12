@@ -1,0 +1,11 @@
+{
+  "name": "api-gateway",
+  "version": "2.0.0",
+  "description": "API Gateway with circuit breakers and aggregated health (Assignment #02)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test:unit": "node --test tests/circuit-breaker.test.js"
+  },
+  "dependencies": { "express": "^4.19.0", "cors": "^2.8.5", "prom-client": "^15.1.0" }
+}

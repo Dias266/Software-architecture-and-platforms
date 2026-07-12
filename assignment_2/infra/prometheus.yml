@@ -1,0 +1,13 @@
+# Application Metrics pattern: Prometheus scrapes every service's /metrics.
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: api-gateway
+    static_configs: [{ targets: ["api-gateway:8080"] }]
+  - job_name: order-service
+    static_configs: [{ targets: ["order-service:3001"] }]
+  - job_name: tracking-service
+    static_configs: [{ targets: ["tracking-service:3002"] }]
+  - job_name: mission-service
+    static_configs: [{ targets: ["mission-service:3003"] }]
