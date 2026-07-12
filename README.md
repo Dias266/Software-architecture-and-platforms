@@ -8,7 +8,7 @@ An online system for delivering packages through drones, as a service: a custome
 
 | Name | Student ID | Assignment |
 |------|-----------|------------|
-| Dias Katrenov | <!-- 0001159300 --> | #01 |
+| Dias Katrenov | 0001159300 | #01 |
 | Mary Anne Selirio| 0001180941 | #02 |
 | Danial Khayatian | <!-- ID --> | #03 |
 
