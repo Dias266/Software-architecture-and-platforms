@@ -116,16 +116,12 @@ The code inside `frontend/src/App.jsx` acts as the project's executable **living
 
 ## 🎥 Demonstration
 
-> 📹 **[Watch the Demo Video Layout](https://github.com/)** *(Insert link post-recording)*
+> 📹 **[Watch the Demo Video Layout](https://www.dropbox.com/scl/fi/1becrag01jx1qj3cpg30j/assignment1.mov?rlkey=ggwncsoz2utou43kwsal2vxza&st=ioamdqi1&dl=0)** *(Insert link post-recording)*
 
 ---
 
-## 👥 Engineering Team
+## 👥 Project Team
 
-* **Student Name** (Student ID: `00000000`) - *Core System Contributor*
-
----
-
-## 📄 License
-
-Academic Research Artifact — Protected against commercial distribution.
+Mary Anne Selirio maryanne.selirio@studio.unibo.it
+Dias Katrenov dias.katrenov@studio.unibo.it
+Danial Khayatian danial.khayatian@studio.unibo.i
