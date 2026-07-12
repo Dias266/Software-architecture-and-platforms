@@ -1,0 +1,297 @@
+Drone BDI agent — Shipping on the Air (prototype)
+
+--- Environment ---
+Running Python: /opt/homebrew/opt/python@3.14/bin/python3.14
+Working Directory: /Users/danialkhayatian/Desktop/shipping-on-the-air-assignment/assign3/shipping-on-the-air-assignment3/agents/drone_bdi
+Process ID (PID): 30208
+
+--- cycle 1 ---
+BELIEFS: battery=72.0% wind=1.5 dist=326m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=326m wind=1.5m/s
+--- cycle 2 ---
+BELIEFS: battery=72.3% wind=0.6 dist=293m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=293m wind=0.6m/s
+--- cycle 3 ---
+BELIEFS: battery=72.3% wind=0.5 dist=308m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=308m wind=0.5m/s
+--- cycle 4 ---
+BELIEFS: battery=73.4% wind=5.8 dist=318m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=318m wind=5.8m/s
+--- cycle 5 ---
+BELIEFS: battery=70.6% wind=1.5 dist=336m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=336m wind=1.5m/s
+--- cycle 6 ---
+BELIEFS: battery=70.0% wind=6.5 dist=342m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=342m wind=6.5m/s
+--- cycle 7 ---
+BELIEFS: battery=70.7% wind=6.3 dist=322m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=322m wind=6.3m/s
+--- cycle 8 ---
+BELIEFS: battery=70.5% wind=7.6 dist=349m obstacle=True
+INTENTION: IDLE
+ACT: hold / release package / wait for weather gap
+Drone BDI agent — Shipping on the Air (prototype)
+
+--- Environment ---
+Running Python: /opt/homebrew/opt/python@3.14/bin/python3.14
+Working Directory: /Users/danialkhayatian/Desktop/shipping-on-the-air-assignment/assign3/shipping-on-the-air-assignment3/agents/drone_bdi
+Process ID (PID): 30492
+
+--- cycle 1 ---
+BELIEFS: battery=71.5% wind=2.1 dist=292m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=292m wind=2.1m/s
+--- cycle 2 ---
+BELIEFS: battery=72.0% wind=7.2 dist=349m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=349m wind=7.2m/s
+--- cycle 3 ---
+BELIEFS: battery=72.2% wind=3.0 dist=341m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=341m wind=3.0m/s
+--- cycle 4 ---
+BELIEFS: battery=73.7% wind=3.8 dist=299m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=299m wind=3.8m/s
+--- cycle 5 ---
+BELIEFS: battery=72.8% wind=2.6 dist=341m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=341m wind=2.6m/s
+--- cycle 6 ---
+BELIEFS: battery=70.8% wind=6.5 dist=339m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=339m wind=6.5m/s
+--- cycle 7 ---
+BELIEFS: battery=71.9% wind=5.8 dist=350m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=350m wind=5.8m/s
+--- cycle 8 ---
+BELIEFS: battery=70.4% wind=2.5 dist=286m obstacle=False
+INTENTION: DELIVER
+ACT: advance along corridor; dist=286m wind=2.5m/s
+2026-07-10 01:11:53,441 - ACT: advance along corridor...
+Drone BDI agent — Shipping on the Air (prototype)
+
+--- Environment ---
+Running Python: /opt/homebrew/opt/python@3.14/bin/python3.14
+Working Directory: /Users/danialkhayatian/Desktop/shipping-on-the-air-assignment/assign3/shipping-on-the-air-assignment3/agents/drone_bdi
+Process ID (PID): 33137
+
+2026-07-10 01:11:53,441 - ACT: advance along corridor...
+--- cycle 1 ------ cycle 1 ---
+
+BELIEFS: battery=70.0% wind=0.7 dist=355m obstacle=TrueBELIEFS: battery=70.0% wind=0.7 dist=355m obstacle=True
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=355m wind=0.7m/sACT: advance along corridor; dist=355m wind=0.7m/s
+
+--- cycle 2 ------ cycle 2 ---
+
+BELIEFS: battery=73.4% wind=3.7 dist=291m obstacle=FalseBELIEFS: battery=73.4% wind=3.7 dist=291m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=291m wind=3.7m/sACT: advance along corridor; dist=291m wind=3.7m/s
+
+--- cycle 3 ------ cycle 3 ---
+
+BELIEFS: battery=73.9% wind=6.5 dist=321m obstacle=TrueBELIEFS: battery=73.9% wind=6.5 dist=321m obstacle=True
+
+INTENTION: IDLEINTENTION: IDLE
+
+ACT: hold / release package / wait for weather gapACT: hold / release package / wait for weather gap
+
+--- cycle 4 ------ cycle 4 ---
+
+BELIEFS: battery=70.4% wind=0.0 dist=320m obstacle=FalseBELIEFS: battery=70.4% wind=0.0 dist=320m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=320m wind=0.0m/sACT: advance along corridor; dist=320m wind=0.0m/s
+
+--- cycle 5 ------ cycle 5 ---
+
+BELIEFS: battery=72.7% wind=6.4 dist=302m obstacle=FalseBELIEFS: battery=72.7% wind=6.4 dist=302m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=302m wind=6.4m/sACT: advance along corridor; dist=302m wind=6.4m/s
+
+--- cycle 6 ------ cycle 6 ---
+
+BELIEFS: battery=70.7% wind=2.5 dist=281m obstacle=FalseBELIEFS: battery=70.7% wind=2.5 dist=281m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=281m wind=2.5m/sACT: advance along corridor; dist=281m wind=2.5m/s
+
+--- cycle 7 ------ cycle 7 ---
+
+BELIEFS: battery=70.6% wind=6.4 dist=287m obstacle=FalseBELIEFS: battery=70.6% wind=6.4 dist=287m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=287m wind=6.4m/sACT: advance along corridor; dist=287m wind=6.4m/s
+
+--- cycle 8 ------ cycle 8 ---
+
+BELIEFS: battery=73.4% wind=4.9 dist=293m obstacle=FalseBELIEFS: battery=73.4% wind=4.9 dist=293m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=293m wind=4.9m/sACT: advance along corridor; dist=293m wind=4.9m/s
+
+2026-07-10 01:12:59,296 - ACT: advance along corridor...
+Drone BDI agent — Shipping on the Air (prototype)
+
+--- Environment ---
+Running Python: /opt/homebrew/opt/python@3.14/bin/python3.14
+Working Directory: /Users/danialkhayatian/Desktop/shipping-on-the-air-assignment/assign3/shipping-on-the-air-assignment3/agents/drone_bdi
+Process ID (PID): 33309
+
+2026-07-10 01:12:59,296 - ACT: advance along corridor...
+--- cycle 1 ------ cycle 1 ---
+
+BELIEFS: battery=72.9% wind=2.4 dist=294m obstacle=FalseBELIEFS: battery=72.9% wind=2.4 dist=294m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=294m wind=2.4m/sACT: advance along corridor; dist=294m wind=2.4m/s
+
+--- cycle 2 ------ cycle 2 ---
+
+BELIEFS: battery=72.8% wind=3.7 dist=296m obstacle=FalseBELIEFS: battery=72.8% wind=3.7 dist=296m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=296m wind=3.7m/sACT: advance along corridor; dist=296m wind=3.7m/s
+
+--- cycle 3 ------ cycle 3 ---
+
+BELIEFS: battery=71.0% wind=4.2 dist=340m obstacle=FalseBELIEFS: battery=71.0% wind=4.2 dist=340m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=340m wind=4.2m/sACT: advance along corridor; dist=340m wind=4.2m/s
+
+--- cycle 4 ------ cycle 4 ---
+
+BELIEFS: battery=70.7% wind=2.3 dist=356m obstacle=FalseBELIEFS: battery=70.7% wind=2.3 dist=356m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=356m wind=2.3m/sACT: advance along corridor; dist=356m wind=2.3m/s
+
+--- cycle 5 ------ cycle 5 ---
+
+BELIEFS: battery=72.0% wind=7.2 dist=331m obstacle=FalseBELIEFS: battery=72.0% wind=7.2 dist=331m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=331m wind=7.2m/sACT: advance along corridor; dist=331m wind=7.2m/s
+
+--- cycle 6 ------ cycle 6 ---
+
+BELIEFS: battery=72.4% wind=6.6 dist=345m obstacle=FalseBELIEFS: battery=72.4% wind=6.6 dist=345m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=345m wind=6.6m/sACT: advance along corridor; dist=345m wind=6.6m/s
+
+--- cycle 7 ------ cycle 7 ---
+
+BELIEFS: battery=71.1% wind=1.5 dist=348m obstacle=FalseBELIEFS: battery=71.1% wind=1.5 dist=348m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=348m wind=1.5m/sACT: advance along corridor; dist=348m wind=1.5m/s
+
+--- cycle 8 ------ cycle 8 ---
+
+BELIEFS: battery=73.9% wind=1.1 dist=332m obstacle=FalseBELIEFS: battery=73.9% wind=1.1 dist=332m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=332m wind=1.1m/sACT: advance along corridor; dist=332m wind=1.1m/s
+
+2026-07-10 01:13:05,182 - ACT: advance along corridor...
+Drone BDI agent — Shipping on the Air (prototype)
+
+--- Environment ---
+Running Python: /opt/homebrew/opt/python@3.14/bin/python3.14
+Working Directory: /Users/danialkhayatian/Desktop/shipping-on-the-air-assignment/assign3/shipping-on-the-air-assignment3/agents/drone_bdi
+Process ID (PID): 33328
+
+2026-07-10 01:13:05,182 - ACT: advance along corridor...
+--- cycle 1 ------ cycle 1 ---
+
+BELIEFS: battery=73.8% wind=7.3 dist=293m obstacle=TrueBELIEFS: battery=73.8% wind=7.3 dist=293m obstacle=True
+
+INTENTION: IDLEINTENTION: IDLE
+
+ACT: hold / release package / wait for weather gapACT: hold / release package / wait for weather gap
+
+--- cycle 2 ------ cycle 2 ---
+
+BELIEFS: battery=70.9% wind=4.6 dist=290m obstacle=TrueBELIEFS: battery=70.9% wind=4.6 dist=290m obstacle=True
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=290m wind=4.6m/sACT: advance along corridor; dist=290m wind=4.6m/s
+
+--- cycle 3 ------ cycle 3 ---
+
+BELIEFS: battery=70.8% wind=5.9 dist=298m obstacle=FalseBELIEFS: battery=70.8% wind=5.9 dist=298m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=298m wind=5.9m/sACT: advance along corridor; dist=298m wind=5.9m/s
+
+--- cycle 4 ------ cycle 4 ---
+
+BELIEFS: battery=70.9% wind=0.8 dist=335m obstacle=FalseBELIEFS: battery=70.9% wind=0.8 dist=335m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=335m wind=0.8m/sACT: advance along corridor; dist=335m wind=0.8m/s
+
+--- cycle 5 ------ cycle 5 ---
+
+BELIEFS: battery=72.9% wind=1.4 dist=352m obstacle=FalseBELIEFS: battery=72.9% wind=1.4 dist=352m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=352m wind=1.4m/sACT: advance along corridor; dist=352m wind=1.4m/s
+
+--- cycle 6 ------ cycle 6 ---
+
+BELIEFS: battery=73.1% wind=1.1 dist=348m obstacle=FalseBELIEFS: battery=73.1% wind=1.1 dist=348m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=348m wind=1.1m/sACT: advance along corridor; dist=348m wind=1.1m/s
+
+--- cycle 7 ------ cycle 7 ---
+
+BELIEFS: battery=70.5% wind=0.6 dist=311m obstacle=FalseBELIEFS: battery=70.5% wind=0.6 dist=311m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=311m wind=0.6m/sACT: advance along corridor; dist=311m wind=0.6m/s
+
+--- cycle 8 ------ cycle 8 ---
+
+BELIEFS: battery=74.0% wind=3.3 dist=299m obstacle=FalseBELIEFS: battery=74.0% wind=3.3 dist=299m obstacle=False
+
+INTENTION: DELIVERINTENTION: DELIVER
+
+ACT: advance along corridor; dist=299m wind=3.3m/sACT: advance along corridor; dist=299m wind=3.3m/s
+
