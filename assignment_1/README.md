@@ -122,6 +122,6 @@ The code inside `frontend/src/App.jsx` acts as the project's executable **living
 
 ## 👥 Project Team
 
-Mary Anne Selirio maryanne.selirio@studio.unibo.it/
-Dias Katrenov dias.katrenov@studio.unibo.it/
-Danial Khayatian danial.khayatian@studio.unibo.i
+* Mary Anne Selirio maryanne.selirio@studio.unibo.it
+* Dias Katrenov dias.katrenov@studio.unibo.it
+* Danial Khayatian danial.khayatian@studio.unibo.i
