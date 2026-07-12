@@ -1,5 +1,5 @@
-# Software-architecture-and-platforms
-# Shipping on the Air ✈️📦
+# Software Architecture and Platforms
+# Shipping on the Air 
 ### Software Architecture and Platforms — a.y. 2025–2026 · University of Bologna
 
 An online system for delivering packages through drones, as a service: a customer sends a package from one place to another within a time window and tracks the delivery in real time. Developed across three assignments with **Domain-Driven Design** as the methodological approach and **Microservices** as the architectural style.
