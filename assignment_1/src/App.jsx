@@ -268,11 +268,43 @@ function TrackingTimeline({ shipment }) {
 }
 function MapVisualisation({ shipment }) {
   // Simple SVG Italy shape approximation with drone position dot
-  const droneX = shipment.progress > 0 ? 100 + (shipment.progress / 100) * 200 : null;
+  let droneX = 100;
   const droneY = 150;
+
+  const originName = shipment.origin?.address || "Origin";
+  const destName = shipment.destination?.address || "Destination";
+  const Status = shipment.status ? shipment.status : "Unknown";
+  let progress = 0
+
+  if(Status === "IN_TRANSIT") {
+    progress = 70
+  }
+  
+  if(Status === "DELIVERED") {
+    progress = 100
+  } 
+  
+  if(Status === "PENDING") {
+    progress = 0
+  }
+  
+  if(Status === "CONFIRMED") {
+    progress = 0
+  } 
+
+  droneX = progress * 2.8; // Scale progress to fit within the SVG width (0-100% → 0-280px)
+  if (droneX < 100) droneX = 120; // Ensure it doesn't go before the origin
   return (
     <div style={{ background: colors.surface2, border: `1px solid ${colors.border}`, borderRadius: 8, padding: 12 }}>
       <div style={{ color: colors.muted, fontSize: 11, marginBottom: 8 }}>Live Map</div>
+      <div style={{ color: colors.white, fontSize: 11, marginBottom: 8 }}>
+
+        {shipment.packageSpec?.weight ? `Package weight: ${shipment.packageSpec.weight} kg` : "Package weight: —"}
+
+
+      </div>
+
+
       <svg viewBox="0 0 400 300" style={{ width: "100%", borderRadius: 6, background: "#0d1b2e" }}>
         {/* Grid lines */}
         {[0,1,2,3,4].map(i => (
@@ -282,17 +314,17 @@ function MapVisualisation({ shipment }) {
           <line key={i} x1={0} y1={i*100} x2={400} y2={i*100} stroke="#1e2d45" strokeWidth={0.5} />
         ))}
         {/* Route line */}
-        {shipment.progress > 0 && (
+        {shipment.packageSpec.weight > 0 && (
           <>
             <line x1={100} y1={150} x2={300} y2={150} stroke={colors.accent + "44"} strokeWidth={2} strokeDasharray="6,4" />
             {/* Origin */}
             <circle cx={100} cy={150} r={6} fill={colors.green} />
-            <text x={100} y={142} textAnchor="middle" fill={colors.green} fontSize={9}>Origin</text>
+            <text x={100} y={130} textAnchor="middle" fill={colors.green} fontSize={14}>Origin: {originName}</text>
             {/* Destination */}
-            <circle cx={300} cy={150} r={6} fill={colors.red} />
-            <text x={300} y={142} textAnchor="middle" fill={colors.red} fontSize={9}>Dest.</text>
+            <circle cx={300} cy={150} r={6} fill={colors.red}/>
+            <text x={300} y={130} textAnchor="middle" fill={colors.red} fontSize={14}>Destination: {destName}</text>
             {/* Drone */}
-            {droneX && (
+            {(
               <g>
                 <circle cx={droneX} cy={droneY} r={10} fill={colors.accent + "33"} />
                 <text x={droneX} y={droneY + 4} textAnchor="middle" fill={colors.accent} fontSize={14}>✈</text>
@@ -311,6 +343,7 @@ function MapVisualisation({ shipment }) {
     </div>
   );
 }
+
 
 function Prototype() {
   const [shipments, setShipments] = useState([]); // Injected local state instead of missing mockData global reference
