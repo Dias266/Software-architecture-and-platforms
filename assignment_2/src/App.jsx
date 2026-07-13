@@ -202,6 +202,10 @@ function TrackingTimeline({ shipment }) {
     ? new Date(shipment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     : "—";
 
+  const updatedAtTime = shipment.createdAt
+    ? new Date(shipment.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : "—";
+
   const etaTime = shipment.timeWindow?.latest 
     ? new Date(shipment.timeWindow.latest).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
     : "—";
@@ -227,7 +231,7 @@ function TrackingTimeline({ shipment }) {
         { time: "—", label: `Drone ${droneId} (${droneModel}) secured package${weightInfo}`, done: true },
         { time: "—", label: `Departed facility at ${originName}`, done: true },
         { time: "—", label: "Route waypoints completed", done: true },
-        { time: etaTime, label: `Package delivered successfully to ${destName}`, done: true },
+        { time: updatedAtTime, label: `Package delivered successfully to ${destName}`, done: true },
       ]
     : currentStatus === "IN_TRANSIT"
     ? [
@@ -399,7 +403,7 @@ function Prototype() {
                   </div>
                   {/* ADAPTER: Display cleanly converted latest window ISO value string */}
                   <span style={{ color: colors.muted, fontSize: 11, whiteSpace: "nowrap" }}>
-                    ETA {s.timeWindow?.latest ? new Date(s.timeWindow.latest).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "—"}
+                    Last updated: {new Date(s.updatedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
                   </span>
                 </div>
               </div>
