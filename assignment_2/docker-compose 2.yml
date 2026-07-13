@@ -1,37 +1,19 @@
-# Shipping on the Air — Assignment #02 deployment (software containers)
-# Single entry point: the API gateway on :8080. Prometheus scrapes every
-# service's /metrics endpoint (application metrics pattern).
+version: "3.9"
+
 services:
 
-  api-gateway:
-    build: ./gateway
-    container_name: api-gateway
-    ports:
-      - "8080:8080"          # the ONLY port clients need
-    environment:
-      - PORT=8080
-      - ORDER_URL=http://order-service:3001
-      - TRACKING_URL=http://tracking-service:3002
-      - MISSION_URL=http://mission-service:3003
-      - CB_FAILURE_THRESHOLD=3
-      - CB_RESET_TIMEOUT_MS=10000
-    depends_on: [order-service, tracking-service, mission-service]
-    restart: unless-stopped
-
+  # ── Order Service ────────────────────────────────────────────────────────────
   order-service:
     build: ./services/order-service
     container_name: order-service
-    expose: ["3001"]
     ports:
-      - "3001:3001"          # exposed for Prometheus / debugging only
+      - "3001:3001"
     environment:
       - PORT=3001
-      - EVENT_STORE_FILE=/app/data/events.jsonl
-      - TRACKING_URL=http://tracking-service:3002
-    volumes:
-      - order-events:/app/data   # the event log survives restarts
+      - NODE_ENV=development
     restart: unless-stopped
 
+  # ── Tracking Service ─────────────────────────────────────────────────────────
   tracking-service:
     build: ./services/tracking-service
     container_name: tracking-service
@@ -39,8 +21,10 @@ services:
       - "3002:3002"
     environment:
       - PORT=3002
+      - NODE_ENV=development
     restart: unless-stopped
 
+  # ── Mission Service ──────────────────────────────────────────────────────────
   mission-service:
     build: ./services/mission-service
     container_name: mission-service
@@ -48,20 +32,8 @@ services:
       - "3003:3003"
     environment:
       - PORT=3003
-      - ORDER_URL=http://order-service:3001
+      - NODE_ENV=development
     restart: unless-stopped
-
-  prometheus:
-    image: prom/prometheus:v2.53.0
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    depends_on: [api-gateway]
-    restart: unless-stopped
-    
-    
 
   # ── Frontend ─────────────────────────────────────────────────────────────────
   frontend:
@@ -86,5 +58,13 @@ services:
       - mission-service
     restart: unless-stopped
 
-volumes:
-  order-events:
+  # ── Swagger UI for API Documentation ───────────────────────────────────────
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: drone-api-docs
+    ports:
+      - "8080:8080"
+    environment:
+      - SWAGGER_JSON=/app/openapi.yaml
+    volumes:
+      - ./openapi.yaml:/app/openapi.yaml

@@ -1,0 +1,701 @@
+openapi: 3.0.3
+info:
+  title: Drone Delivery Fleet & Logistics Microservices
+  description: Unified API specification for the Order, Mission, and Tracking services.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001
+    description: Order Service
+  - url: http://localhost:3002
+    description: Tracking Service
+  - url: http://localhost:3003
+    description: Mission Service
+
+tags:
+  - name: Order Service
+    description: Handles shipment records and order lifecycle management.
+  - name: Mission Service
+    description: Manages flight paths, waypoint assignments, and drone status updates.
+  - name: Tracking Service
+    description: Provides live telematics, historical logs, and ETA projections.
+  - name: Health Check
+    description: Generic service status utility endpoints.
+
+paths:
+  # ── ORDER SERVICE ENDPOINTS ──────────────────────────────────────────────────
+  /shipments:
+    get:
+      tags:
+        - Order Service
+      summary: Retrieve all shipments
+      responses:
+        '200':
+          description: A list of shipments.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shipment'
+    post:
+      tags:
+        - Order Service
+      summary: Create a new shipment order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - origin
+                - destination
+                - packageSpec
+              properties:
+                customerId:
+                  type: string
+                  example: CUST-01
+                origin:
+                  $ref: '#/components/schemas/AddressLocation'
+                destination:
+                  $ref: '#/components/schemas/AddressLocation'
+                packageSpec:
+                  $ref: '#/components/schemas/PackageSpec'
+                timeWindow:
+                  $ref: '#/components/schemas/TimeWindow'
+      responses:
+        '201':
+          description: Shipment successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+        '400':
+          description: Required payload missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /shipments/{id}:
+    get:
+      tags:
+        - Order Service
+      summary: Get a single shipment by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: SHP-001
+      responses:
+        '200':
+          description: Shipment details found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+        '404':
+          description: Shipment not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Order Service
+      summary: Cancel a shipment order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: SHP-001
+      responses:
+        '200':
+          description: Shipment successfully marked as CANCELLED.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Shipment cancelled
+                  id:
+                    type: string
+                    example: SHP-001
+        '404':
+          description: Shipment not found.
+
+  /shipments/{id}/status:
+    patch:
+      tags:
+        - Order Service
+      summary: Update the lifecycle status of a shipment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: SHP-001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [PENDING, CONFIRMED, IN_TRANSIT, DELIVERED, CANCELLED]
+                  example: IN_TRANSIT
+      responses:
+        '200':
+          description: Shipment status updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+        '400':
+          description: Provided status is invalid.
+        '404':
+          description: Shipment not found.
+
+  # ── MISSION SERVICE ENDPOINTS ────────────────────────────────────────────────
+  /missions:
+    get:
+      tags:
+        - Mission Service
+      summary: Retrieve all flight missions
+      responses:
+        '200':
+          description: Array of mission routing information.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mission'
+    post:
+      tags:
+        - Mission Service
+      summary: Commission and spin up a drone dispatch path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - shipmentId
+                - origin
+                - destination
+              properties:
+                shipmentId:
+                  type: string
+                  example: SHP-002
+                origin:
+                  $ref: '#/components/schemas/CoordinateLocation'
+                destination:
+                  $ref: '#/components/schemas/CoordinateLocation'
+                packageWeight:
+                  type: number
+                  format: float
+                  example: 0.4
+      responses:
+        '201':
+          description: Mission assigned and flight path active.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+        '400':
+          description: Missing mandatory telemetry arguments.
+        '503':
+          description: Fleet conflict. No online drone fits payload constraints.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /missions/{id}:
+    get:
+      tags:
+        - Mission Service
+      summary: Get details of a single mission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: MSN-001
+      responses:
+        '200':
+          description: Mission profile details returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+        '404':
+          description: Mission records empty for ID.
+
+  /missions/by-shipment/{shipmentId}:
+    get:
+      tags:
+        - Mission Service
+      summary: Get mission mapped directly to a specific cargo target
+      parameters:
+        - name: shipmentId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: SHP-001
+      responses:
+        '200':
+          description: Mission associated with shipment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+        '404':
+          description: No active hardware flight profile tracks this cargo.
+
+  /missions/{id}/complete:
+    patch:
+      tags:
+        - Mission Service
+      summary: Conclude a successful drone mission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: MSN-001
+      responses:
+        '200':
+          description: Mission verified finished and drone released to dock.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+        '404':
+          description: Target mission identity unmatched.
+
+  /missions/{id}/abort:
+    patch:
+      tags:
+        - Mission Service
+      summary: Force stop/abort an active flight mission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: MSN-001
+      responses:
+        '200':
+          description: Safety procedures run. Drone disarmed/routed home.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+        '404':
+          description: Target mission identity unmatched.
+
+  /drones:
+    get:
+      tags:
+        - Mission Service
+      summary: Pull overview of active and idle drone assets
+      responses:
+        '200':
+          description: List of fleet elements.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Drone'
+
+  # ── TRACKING SERVICE ENDPOINTS ───────────────────────────────────────────────
+  /track/{shipmentId}:
+    get:
+      tags:
+        - Tracking Service
+      summary: Retrieve standard telematics tracking ledger for cargo
+      parameters:
+        - name: shipmentId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: SHP-001
+      responses:
+        '200':
+          description: Complete current state tracker schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingRecord'
+        '404':
+          description: No data points logged for target package identity string.
+
+  /track/{shipmentId}/events:
+    get:
+      tags:
+        - Tracking Service
+      summary: Isolated history array of timeline checkpoints
+      parameters:
+        - name: shipmentId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: SHP-001
+      responses:
+        '200':
+          description: Array listing milestone time events.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TrackingEvent'
+        '404':
+          description: Target package log not found.
+    post:
+      tags:
+        - Tracking Service
+      summary: Append a new tracking status update milestone
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: SHP-001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - description
+              properties:
+                type:
+                  type: string
+                  example: WAYPOINT_REACHED
+                description:
+                  type: string
+                  example: Waypoint WP-2 reached
+                location:
+                  $ref: '#/components/schemas/CoordinateLocation'
+                eta:
+                  type: string
+                  format: date-time
+                  example: "2025-10-20T14:32:00Z"
+                progress:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                  example: 65
+      responses:
+        '201':
+          description: Progress change noted. New log profile node generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingEvent'
+        '400':
+          description: Payload missing type or description keys.
+
+  /track/{shipmentId}/eta:
+    get:
+      tags:
+        - Tracking Service
+      summary: Read optimized lightweight delivery timeframe data points
+      parameters:
+        - name: shipmentId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: SHP-001
+      responses:
+        '200':
+          description: Delivery tracking ETA metrics payload wrapper.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shipmentId:
+                    type: string
+                    example: SHP-001
+                  eta:
+                    type: string
+                    format: date-time
+                    nullable: true
+                    example: "2025-10-20T14:32:00Z"
+                  progress:
+                    type: integer
+                    example: 62
+        '404':
+          description: Target package context unavailable.
+
+  # ── GENERIC HEALTH DIAGNOSTICS ───────────────────────────────────────────────
+  /health:
+    get:
+      tags:
+        - Health Check
+      summary: Simple diagnostic runtime ping checker
+      responses:
+        '200':
+          description: Service returns healthy operational variables.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service:
+                    type: string
+                    example: order-service
+                  status:
+                    type: string
+                    example: ok
+                  version:
+                    type: string
+                    example: 1.0.0
+
+components:
+  schemas:
+    # --- Structural Helper Schemas ---
+    AddressLocation:
+      type: object
+      properties:
+        address:
+          type: string
+          example: Milan Central
+        lat:
+          type: number
+          format: float
+          example: 45.4654
+        lon:
+          type: number
+          format: float
+          example: 9.1866
+
+    CoordinateLocation:
+      type: object
+      required:
+        - lat
+        - lon
+      properties:
+        lat:
+          type: number
+          format: float
+          example: 43.8
+        lon:
+          type: number
+          format: float
+          example: 11.2
+        alt:
+          type: number
+          format: float
+          example: 120
+
+    PackageSpec:
+      type: object
+      properties:
+        weight:
+          type: number
+          format: float
+          example: 1.2
+        fragile:
+          type: boolean
+          example: false
+
+    TimeWindow:
+      type: object
+      properties:
+        earliest:
+          type: string
+          format: date-time
+          example: "2025-10-20T13:00:00Z"
+        latest:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2025-10-20T15:00:00Z"
+
+    Waypoint:
+      type: object
+      properties:
+        order:
+          type: integer
+          example: 1
+        lat:
+          type: number
+          format: float
+          example: 45.4654
+        lon:
+          type: number
+          format: float
+          example: 9.1866
+        alt:
+          type: number
+          format: float
+          example: 100
+        label:
+          type: string
+          example: "Milan Central (origin)"
+
+    TrackingEvent:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-10-20T13:00:00Z"
+        type:
+          type: string
+          example: ORDER_PLACED
+        description:
+          type: string
+          example: Shipment order placed
+
+    # --- Prime Resource Entities ---
+    Shipment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: SHP-001
+        customerId:
+          type: string
+          example: CUST-01
+        origin:
+          $ref: '#/components/schemas/AddressLocation'
+        destination:
+          $ref: '#/components/schemas/AddressLocation'
+        packageSpec:
+          $ref: '#/components/schemas/PackageSpec'
+        timeWindow:
+          $ref: '#/components/schemas/TimeWindow'
+        status:
+          type: string
+          enum: [PENDING, CONFIRMED, IN_TRANSIT, DELIVERED, CANCELLED]
+          example: IN_TRANSIT
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-10-20T13:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-10-20T14:35:00Z"
+
+    Mission:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MSN-001
+        shipmentId:
+          type: string
+          example: SHP-001
+        droneId:
+          type: string
+          example: DRN-07
+        status:
+          type: string
+          enum: [IN_PROGRESS, COMPLETED, ABORTED]
+          example: IN_PROGRESS
+        route:
+          type: object
+          properties:
+            waypoints:
+              type: array
+              items:
+                $ref: '#/components/schemas/Waypoint'
+        startedAt:
+          type: string
+          format: date-time
+          example: "2025-10-20T13:12:00Z"
+        eta:
+          type: string
+          format: date-time
+          example: "2025-10-20T14:32:00Z"
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+
+    Drone:
+      type: object
+      properties:
+        id:
+          type: string
+          example: DRN-07
+        model:
+          type: string
+          example: "DJI Matrice 300"
+        battery:
+          type: integer
+          example: 72
+        maxPayload:
+          type: number
+          format: float
+          example: 2.7
+        status:
+          type: string
+          enum: [AVAILABLE, ON_MISSION]
+          example: ON_MISSION
+
+    TrackingRecord:
+      type: object
+      properties:
+        shipmentId:
+          type: string
+          example: SHP-001
+        currentLocation:
+          mixIn:
+            - $ref: '#/components/schemas/CoordinateLocation'
+          nullable: true
+        eta:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2025-10-20T14:32:00Z"
+        progress:
+          type: integer
+          example: 62
+        droneId:
+          type: string
+          nullable: true
+          example: DRN-07
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackingEvent'
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "No tracking record found for this shipment"
+
