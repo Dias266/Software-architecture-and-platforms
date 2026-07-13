@@ -403,7 +403,7 @@ function Prototype() {
                   </div>
                   {/* ADAPTER: Display cleanly converted latest window ISO value string */}
                   <span style={{ color: colors.muted, fontSize: 11, whiteSpace: "nowrap" }}>
-                    Last updated: {new Date(s.updatedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
+                    created at: {new Date(s.createdAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
                   </span>
                 </div>
               </div>
