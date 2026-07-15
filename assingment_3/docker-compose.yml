@@ -23,15 +23,17 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-
-  order-service:
-    build: ./services/order_service
+      
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
     ports:
-      - "8001:8001"
+      - "8080:8080"
     environment:
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092 # Use internal network name
     depends_on:
       - kafka
+
 
   shipment-orchestrator:
     build: ./services/shipment_orchestrator
@@ -51,6 +53,17 @@ services:
     depends_on:
       - kafka
 
+
+  order-service:
+    build: ./services/order_service
+    ports:
+      - "8001:8001"
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - kafka
+      
+      
   prometheus:
     image: prom/prometheus:v2.52.0
     ports:
