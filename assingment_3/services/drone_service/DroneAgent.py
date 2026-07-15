@@ -52,6 +52,7 @@ class DroneAgent:
                         "event_type": "DroneTelemetry",
                         "drone_id": self.drone_id,
                         "order_id": self.order_id,
+                        "step": self.status,
                         "mode": mode.name,
                         "battery": round(b.battery_pct, 1)
                     })
