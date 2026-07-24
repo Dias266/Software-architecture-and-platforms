@@ -13,6 +13,11 @@ The application is built using three primary microservices operating in harmony:
 
 ---
 <img width="1408" height="768" alt="Gemini_Generated_Image_wcwbkywcwbkywcwb (1)" src="https://github.com/user-attachments/assets/032f3892-d06e-4492-9cb9-62f2dc1ed73f" />
+
+<img width="1408" height="768" alt="arti-dron-agent" src="https://github.com/user-attachments/assets/428e790d-699c-4bc9-831c-52ecb9d73b1a" />
+
+
+
 <img width="1408" height="768" alt="Gemini_Generated_Image_e55a45e55a45e55a" src="https://github.com/user-attachments/assets/67193e67-770f-4adb-ab21-29bee4ecf5d1" />
 
 
