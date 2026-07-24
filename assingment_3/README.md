@@ -104,6 +104,9 @@ Send an HTTP `POST` request to the `order-service` to initialize a drone shipmen
 
 ---
 
+<img width="1440" height="679" alt="Screenshot 2026-07-24 at 18 01 51" src="https://github.com/user-attachments/assets/4aa37feb-e841-49eb-8cc2-3d9460ee6e78" />
+
+
 ### Step 2: Intercept the Live Kafka Event Pipeline
 
 When the order is created, the system securely streams an event log downstream. To watch these messages broadcast across the broker live, attach a console consumer directly to the cluster container:
