@@ -162,6 +162,3 @@ To stop the services and clean up running container memories, execute:
 docker compose down
 
 ```
-# shipping-on-the-air-assignment3
-# shipping-on-the-air-assignment3
-# shipping-on-the-air-assignment3
