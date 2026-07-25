@@ -1,0 +1,181 @@
+openapi: 3.0.3
+info:
+  title: Shipping Microservices API
+  description: Multi-service spec targeting Order Service (8001), Shipment Orchestrator (8002), and Drone Service (8003).
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8001
+    description: Order Service
+  - url: http://localhost:8002
+    description: Shipment Orchestrator
+  - url: http://localhost:8003
+    description: Drone Service
+
+paths:
+  /orders:
+    post:
+      summary: Create Order
+      description: Synchronous REST entry point — publishes OrderCreated for the event-driven orchestrator.
+      operationId: create_order
+      servers:
+        - url: http://localhost:8001
+          description: Order Service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '503':
+          description: Kafka Unavailable
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: kafka_unavailable
+
+  /drones/active:
+    get:
+      summary: Get Active Drones
+      description: Returns current active drone missions.
+      operationId: get_active_drones
+      servers:
+        - url: http://localhost:8003
+          description: Drone Service
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+
+  /drones/history:
+    get:
+      summary: Get Drone History
+      description: Returns the full history of completed missions.
+      operationId: get_drone_history
+      servers:
+        - url: http://localhost:8003
+          description: Drone Service
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DroneHistoryRecord'
+
+  /health:
+    get:
+      summary: Health Check
+      description: Check status for any of the 3 services. Select the target server in Swagger UI.
+      operationId: get_health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /metrics:
+    get:
+      summary: Prometheus Metrics
+      description: Fetch metrics from any of the 3 services. Select the target server in Swagger UI.
+      operationId: get_metrics
+      responses:
+        '200':
+          description: Metrics generated successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  schemas:
+    OrderCreate:
+      type: object
+      required:
+        - customer_id
+        - parcel_weight_kg
+        - destination_lat
+        - destination_lon
+      properties:
+        customer_id:
+          type: string
+          minLength: 1
+        parcel_weight_kg:
+          type: number
+          exclusiveMinimum: 0
+          maximum: 500
+        destination_lat:
+          type: number
+        destination_lon:
+          type: number
+
+    OrderResponse:
+      type: object
+      required:
+        - order_id
+      properties:
+        order_id:
+          type: string
+
+    DroneHistoryRecord:
+      type: object
+      properties:
+        drone_id:
+          type: string
+        status:
+          type: string
+        completed_at:
+          type: number
+
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+
+    ValidationError:
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      properties:
+        loc:
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+        msg:
+          type: string
+        type:
+          type: string
