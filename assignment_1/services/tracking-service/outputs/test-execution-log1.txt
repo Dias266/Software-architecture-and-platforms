@@ -1,0 +1,56 @@
+================================================================================
+           SHIPPING ON THE AIR - HEXAGONAL ARCHITECTURE TEST SUITE
+================================================================================
+Timestamp   : 2026-07-25T21:09:37.587Z
+Service     : Order Service / Tracking Context
+Test File   : order-service.hexagon.test.js
+Environment : Node.js (v26.5.0)
+Architecture: Hexagonal Architecture (Ports & Adapters)
+
+--------------------------------------------------------------------------------
+1. TEST SUITE INITIALIZATION & SUITE DISCOVERY
+--------------------------------------------------------------------------------
+[21:09:37.587] INFO  [TestRunner] Initializing runner context...
+[21:09:37.587] INFO  [TestRunner] Ports loaded: [ShipmentRepositoryPort]
+[21:09:37.587] INFO  [TestRunner] Domain Services loaded: [ShipmentService]
+[21:09:37.587] INFO  [TestRunner] Adapters loaded: [InMemoryShipmentRepository, ShipmentController]
+
+--------------------------------------------------------------------------------
+2. TEST EXECUTION PHASES
+--------------------------------------------------------------------------------
+
+
+[SUITE] 1. Core Application Hexagon Isolation (Domain Core)
+--------------------------------------------------------------------------------
+[21:09:37.597] DEBUG [DomainCore] Executing ShipmentService.createShipment()
+[21:09:37.597] DEBUG [DomainCore] Domain Entity Created -> ID: SHP-527318
+[21:09:37.598] PASS  [Test] should successfully execute business logic without any HTTP/Database frameworks (1ms)
+[21:09:37.598] DEBUG [DomainCore] Testing invalid payload validation
+[21:09:37.605] WARN  [DomainCore] Caught expected error: Invalid shipment payload: Missing mandatory attributes.
+[21:09:37.605] PASS  [Test] should enforce domain validation rules independently (7ms)
+[21:09:37.605] DEBUG [DomainCore] Checking constructor dependency guard
+[21:09:37.605] WARN  [DomainCore] Caught expected error: Outbound Port [ShipmentRepositoryPort] is required.
+[21:09:37.606] PASS  [Test] should prevent instantiation if Outbound Port is missing (1ms)
+
+[SUITE] 2. Outbound Adapter Compliance (Secondary Port Verification)
+--------------------------------------------------------------------------------
+[21:09:37.606] DEBUG [Port:Out] Verifying method contract on InMemoryShipmentRepository
+[21:09:37.607] PASS  [Test] InMemoryRepository adapter must strictly implement port interface methods (1ms)
+[21:09:37.607] DEBUG [Port:Out] Injecting mock adapter into domain core
+[21:09:37.607] PASS  [Test] should seamlessly allow swapping outbound repository implementation with a Mock Adapter (0ms)
+
+[SUITE] 3. Inbound Adapter Decoupling (Primary Controller Verification)
+--------------------------------------------------------------------------------
+[21:09:37.608] DEBUG [Adapter:In] Simulating HTTP Request POST /shipments
+[21:09:37.608] PASS  [Test] HTTP Controller should adapt request payload to domain service and return HTTP 201 (0ms)
+
+--------------------------------------------------------------------------------
+3. EXECUTION SUMMARY
+--------------------------------------------------------------------------------
+Test Results: 6 passed, 0 failed, 6 total
+
+================================================================================
+HEXAGONAL ISOLATION VERIFICATION VERDICT: [ PASSED ]
+- Core Domain: Completely isolated from frameworks and databases.
+- Ports & Adapters: Contracts strictly respected and interchangeable.
+================================================================================

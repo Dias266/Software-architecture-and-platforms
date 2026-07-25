@@ -1,0 +1,47 @@
+================================================================================
+           SHIPPING ON THE AIR - HEXAGONAL ARCHITECTURE TEST SUITE
+================================================================================
+Timestamp   : 2026-07-25T21:12:03.392Z
+Service     : Order Service / Tracking Context
+Test File   : order-service.hexagon.test.js
+Environment : Node.js (v26.5.0) | Test Runner: Jest
+Architecture: Hexagonal Architecture (Ports & Adapters)
+
+--------------------------------------------------------------------------------
+1. TEST SUITE INITIALIZATION & SUITE DISCOVERY
+--------------------------------------------------------------------------------
+[21:12:03.392] INFO  [TestRunner] Initializing Jest runner context...
+[21:12:03.392] INFO  [TestRunner] Ports loaded: [ShipmentRepositoryPort]
+[21:12:03.392] INFO  [TestRunner] Domain Services loaded: [ShipmentService]
+[21:12:03.392] INFO  [TestRunner] Adapters loaded: [InMemoryShipmentRepository, ShipmentController]
+
+--------------------------------------------------------------------------------
+2. TEST EXECUTION PHASES
+--------------------------------------------------------------------------------
+
+[21:12:03.394] DEBUG [DomainCore] Executing ShipmentService.createShipment()
+[21:12:03.404] DEBUG [DomainCore] Domain Entity Created -> ID: SHP-582673
+[21:12:03.405] PASS  [Test] should successfully execute business logic without any HTTP/Database frameworks
+[21:12:03.406] DEBUG [DomainCore] Testing invalid payload validation
+[21:12:03.411] WARN  [DomainCore] Caught expected validation exception
+[21:12:03.412] PASS  [Test] should enforce domain validation rules independently
+[21:12:03.412] DEBUG [DomainCore] Checking constructor dependency guard
+[21:12:03.413] WARN  [DomainCore] Guard successfully enforced
+[21:12:03.414] PASS  [Test] should prevent instantiation if Outbound Port is missing
+[21:12:03.415] DEBUG [Port:Out] Verifying method contract on InMemoryShipmentRepository
+[21:12:03.416] PASS  [Test] InMemoryRepository adapter must strictly implement port interface methods
+[21:12:03.417] DEBUG [Port:Out] Injecting mock adapter into domain core
+[21:12:03.418] PASS  [Test] should seamlessly allow swapping outbound repository implementation with a Mock Adapter
+[21:12:03.418] DEBUG [Adapter:In] Simulating HTTP Request POST /shipments
+[21:12:03.419] PASS  [Test] HTTP Controller should adapt request payload to domain service and return HTTP 201
+
+--------------------------------------------------------------------------------
+3. EXECUTION SUMMARY
+--------------------------------------------------------------------------------
+Test Results: 6 passed, 0 failed, 6 total
+
+================================================================================
+HEXAGONAL ISOLATION VERIFICATION VERDICT: [ PASSED ]
+- Core Domain: Completely isolated from frameworks and databases.
+- Ports & Adapters: Contracts strictly respected and interchangeable.
+================================================================================
