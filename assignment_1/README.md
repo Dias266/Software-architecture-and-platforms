@@ -24,6 +24,15 @@ The platform applies **Domain-Driven Design (DDD)** principles to orchestrate de
 <img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/39069067-e8dc-4d28-bb1c-f91a77bba045" />
 
 
+<img width="1404" height="900" alt="image" src="https://github.com/user-attachments/assets/3db8e8ce-5d8f-4fa1-84a9-fd6bfe09d6b6" />
+
+
+<img width="922" height="535" alt="22" src="https://github.com/user-attachments/assets/d149a003-967d-40be-993f-3237b0e64702" />
+
+<img width="1024" height="640" alt="05e5ac70-baee-47a7-8c43-cb6e477698b7" src="https://github.com/user-attachments/assets/28ca1e7f-6076-4ad8-bec5-7109005643bb" />
+
+
+
 ## 📂 Repository Structure
 
 ```text
