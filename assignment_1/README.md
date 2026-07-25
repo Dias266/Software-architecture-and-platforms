@@ -87,15 +87,57 @@ docker compose up --build -d
 
 ## 🏗️ Architectural Topology
 
-The system maps explicitly to **5 Bounded Contexts** communicating asynchronously via **Apache Kafka** domain events.
+The system is derived from **3 Bounded Contexts**, identified via Domain-Driven
+Design and each mapped 1:1 to a microservice. Services currently communicate over
+**synchronous REST/JSON** — see [`docs/02-design.md §4`](./docs/02-design.md) for
+the full rationale and the documented path toward event-driven integration.
 
 | Bounded Context | Microservice Owner | Core Domain Responsibility |
 | --- | --- | --- |
-| **Order Management** | `order-service` | Ingestion, validation, and shipment state transitions. |
-| **Route Planning** | `mission-service` | Geo-spatial 3D waypoint computation & corridor safety. |
-| **Fleet Management** | `mission-service` | Drone availability matrices, payloads, and battery health. |
-| **Mission Execution** | `mission-service` | Telemetry capture, route verification, and safe landing steps. |
-| **Tracking & Alerts** | `tracking-service` | Dynamic ETA calculations and chronological journey events. |
+| **Booking** | `order-service` | Shipment ingestion, validation, and lifecycle/status transitions. |
+| **Mission / Dispatch** | `mission-service` | Drone selection, route (waypoint) computation, and fleet management. |
+| **Tracking** | `tracking-service` | Live location, ETA, delivery progress, and the chronological event log. |
+
+> **Note on scope:** this prototype intentionally uses in-memory state and direct
+> REST calls rather than a database or message broker, to keep focus on the
+> architecturally relevant parts of the assignment. These trade-offs — and where a
+> production system would introduce PostgreSQL and Kafka — are documented explicitly
+> in [`docs/01-analysis.md §4`](./docs/01-analysis.md) and referenced as code comments
+> (e.g. `// In production: publish ShipmentPlaced event to Kafka here`).
+
+---
+
+## 🧱 Internal Service Architecture
+
+On top of the microservices architecture above, **each of the three services is
+internally structured as a hexagon (ports & adapters)**. This is a deliberate
+refinement layered on top of what the assignment requires (DDD + microservices),
+following the same internal shape the course material uses for typical microservices:
+
+```
+Inbound Adapter (Express Controller)
+        │  calls
+        ▼
+Inbound Port (Service interface)  ◄───implements─── Inbound Port Impl (use cases)
+        │  calls
+        ▼
+Outbound Port (Repository interface)  ◄───implements─── Outbound Adapter (In-Memory Repository)
+```
+
+| Hexagonal role | order-service | tracking-service | mission-service |
+| --- | --- | --- | --- |
+| Inbound adapter | `ShipmentController` | `TrackingController` | `MissionController` |
+| Inbound port | `ShipmentService` | `TrackingService` | `MissionService` |
+| Inbound port impl. (use cases) | `ShipmentServiceImpl` | `TrackingServiceImpl` | `MissionServiceImpl` |
+| Outbound port | `ShipmentRepositoryPort` | `TrackingRepositoryPort` | `MissionRepositoryPort` |
+| Outbound adapter | `InMemoryShipmentRepository` | `InMemoryTrackingRepository` | `InMemoryMissionRepository` |
+
+Both the inbound and outbound side follow the same interface/implementation pattern —
+controllers and use-case classes only ever depend on the port (the abstract
+interface), never on a concrete implementation directly. This keeps each service's
+business logic swappable and unit-testable independently of Express or the in-memory
+store, and would allow, for example, `InMemoryShipmentRepository` to be replaced with
+a Postgres-backed implementation without touching the controller or use-case classes.
 
 ---
 
