@@ -85,6 +85,19 @@ services:
       - tracking-service
       - mission-service
     restart: unless-stopped
+    
+    
+
+  # ── Swagger UI for API Documentation ───────────────────────────────────────
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: drone-api-docs
+    ports:
+      - "8080:8080"
+    environment:
+      - SWAGGER_JSON=/app/openapi.yaml
+    volumes:
+      - ./openapi.yaml:/app/openapi.yaml
 
 volumes:
   order-events:

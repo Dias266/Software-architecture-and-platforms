@@ -1,15 +1,17 @@
 openapi: 3.0.3
 info:
   title: Drone Delivery Fleet & Logistics Microservices
-  description: Unified API specification for the Order, Mission, and Tracking services.
+  description: Unified API specification for Order, Mission, and Tracking services via Nginx Gateway.
   version: 1.0.0
 servers:
+  - url: http://localhost:8080/api
+    description: Unified API Gateway (Nginx Proxy)
   - url: http://localhost:3001
-    description: Order Service
+    description: Order Service (Direct)
   - url: http://localhost:3002
-    description: Tracking Service
+    description: Tracking Service (Direct)
   - url: http://localhost:3003
-    description: Mission Service
+    description: Mission Service (Direct)
 
 tags:
   - name: Order Service
@@ -378,7 +380,7 @@ paths:
         - Tracking Service
       summary: Append a new tracking status update milestone
       parameters:
-        - name: id
+        - name: shipmentId
           in: path
           required: true
           schema:
@@ -405,7 +407,7 @@ paths:
                 eta:
                   type: string
                   format: date-time
-                  example: "2025-10-20T14:32:00Z"
+                  example: "2026-10-20T14:32:00Z"
                 progress:
                   type: integer
                   minimum: 0
@@ -448,7 +450,7 @@ paths:
                     type: string
                     format: date-time
                     nullable: true
-                    example: "2025-10-20T14:32:00Z"
+                    example: "2026-10-20T14:32:00Z"
                   progress:
                     type: integer
                     example: 62
@@ -533,12 +535,12 @@ components:
         earliest:
           type: string
           format: date-time
-          example: "2025-10-20T13:00:00Z"
+          example: "2026-10-20T13:00:00Z"
         latest:
           type: string
           format: date-time
           nullable: true
-          example: "2025-10-20T15:00:00Z"
+          example: "2026-10-20T15:00:00Z"
 
     Waypoint:
       type: object
@@ -568,7 +570,7 @@ components:
         timestamp:
           type: string
           format: date-time
-          example: "2025-10-20T13:00:00Z"
+          example: "2026-10-20T13:00:00Z"
         type:
           type: string
           example: ORDER_PLACED
@@ -601,11 +603,11 @@ components:
         createdAt:
           type: string
           format: date-time
-          example: "2025-10-20T13:00:00Z"
+          example: "2026-10-20T13:00:00Z"
         updatedAt:
           type: string
           format: date-time
-          example: "2025-10-20T14:35:00Z"
+          example: "2026-10-20T14:35:00Z"
 
     Mission:
       type: object
@@ -633,11 +635,11 @@ components:
         startedAt:
           type: string
           format: date-time
-          example: "2025-10-20T13:12:00Z"
+          example: "2026-10-20T13:12:00Z"
         eta:
           type: string
           format: date-time
-          example: "2025-10-20T14:32:00Z"
+          example: "2026-10-20T14:32:00Z"
         completedAt:
           type: string
           format: date-time
@@ -679,7 +681,7 @@ components:
           type: string
           format: date-time
           nullable: true
-          example: "2025-10-20T14:32:00Z"
+          example: "2026-10-20T14:32:00Z"
         progress:
           type: integer
           example: 62
@@ -698,4 +700,3 @@ components:
         error:
           type: string
           example: "No tracking record found for this shipment"
-
