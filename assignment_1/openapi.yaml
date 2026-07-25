@@ -131,6 +131,10 @@ paths:
                     example: SHP-001
         '404':
           description: Shipment not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /shipments/{id}/status:
     patch:
@@ -166,8 +170,16 @@ paths:
                 $ref: '#/components/schemas/Shipment'
         '400':
           description: Provided status is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Shipment not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   # ── MISSION SERVICE ENDPOINTS ────────────────────────────────────────────────
   /missions:
@@ -219,6 +231,10 @@ paths:
                 $ref: '#/components/schemas/Mission'
         '400':
           description: Missing mandatory telemetry arguments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '503':
           description: Fleet conflict. No online drone fits payload constraints.
           content:
@@ -247,6 +263,10 @@ paths:
                 $ref: '#/components/schemas/Mission'
         '404':
           description: Mission records empty for ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /missions/by-shipment/{shipmentId}:
     get:
@@ -269,6 +289,10 @@ paths:
                 $ref: '#/components/schemas/Mission'
         '404':
           description: No active hardware flight profile tracks this cargo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /missions/{id}/complete:
     patch:
@@ -291,6 +315,10 @@ paths:
                 $ref: '#/components/schemas/Mission'
         '404':
           description: Target mission identity unmatched.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /missions/{id}/abort:
     patch:
@@ -313,6 +341,10 @@ paths:
                 $ref: '#/components/schemas/Mission'
         '404':
           description: Target mission identity unmatched.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /drones:
     get:
@@ -351,6 +383,10 @@ paths:
                 $ref: '#/components/schemas/TrackingRecord'
         '404':
           description: No data points logged for target package identity string.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /track/{shipmentId}/events:
     get:
@@ -375,6 +411,10 @@ paths:
                   $ref: '#/components/schemas/TrackingEvent'
         '404':
           description: Target package log not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       tags:
         - Tracking Service
@@ -422,6 +462,10 @@ paths:
                 $ref: '#/components/schemas/TrackingEvent'
         '400':
           description: Payload missing type or description keys.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /track/{shipmentId}/eta:
     get:
@@ -456,6 +500,10 @@ paths:
                     example: 62
         '404':
           description: Target package context unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   # ── GENERIC HEALTH DIAGNOSTICS ───────────────────────────────────────────────
   /health:
@@ -674,9 +722,7 @@ components:
           type: string
           example: SHP-001
         currentLocation:
-          mixIn:
-            - $ref: '#/components/schemas/CoordinateLocation'
-          nullable: true
+          $ref: '#/components/schemas/CoordinateLocation'
         eta:
           type: string
           format: date-time
