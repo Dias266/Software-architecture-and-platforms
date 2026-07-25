@@ -223,7 +223,68 @@ required by NFR-5, versioned in the same repository as the code that implements 
 
 ---
 
-## 5. Traceability Summary
+## 5. Internal Service Architecture: Hexagonal (Ports & Adapters)
+
+Section 4 covers the **system-level** architectural style (microservices, derived
+from the bounded contexts in §2). This section covers a **different, more granular**
+level: how the code *inside* each individual service is organised.
+
+Each of the three services (`order-service`, `mission-service`, `tracking-service`)
+is internally structured as a hexagon:
+
+```mermaid
+graph LR
+    subgraph Hexagon["One service (e.g. order-service)"]
+        direction LR
+        IA["Inbound Adapter<br/>(Express Controller)"]
+        IP["Inbound Port<br/>(Service interface)"]
+        UC["Inbound Port Impl.<br/>(Use cases)"]
+        OP["Outbound Port<br/>(Repository interface)"]
+        OA["Outbound Adapter<br/>(In-Memory Repository)"]
+
+        IA -- calls --> IP
+        UC -. implements .-> IP
+        UC -- calls --> OP
+        OA -. implements .-> OP
+    end
+
+    Client(["HTTP client"]) --> IA
+    OP --> OA
+```
+
+| Hexagonal role | order-service | mission-service | tracking-service |
+|---|---|---|---|
+| Inbound adapter | `ShipmentController` | `MissionController` | `TrackingController` |
+| Inbound port (interface) | `ShipmentService` | `MissionService` | `TrackingService` |
+| Inbound port impl. (use cases) | `ShipmentServiceImpl` | `MissionServiceImpl` | `TrackingServiceImpl` |
+| Outbound port (interface) | `ShipmentRepositoryPort` | `MissionRepositoryPort` | `TrackingRepositoryPort` |
+| Outbound adapter | `InMemoryShipmentRepository` | `InMemoryMissionRepository` | `InMemoryTrackingRepository` |
+
+**Why this is a separate decision from §4:** the assignment brief requires DDD and a
+microservices architectural style — it does not prescribe how a service's own code is
+internally organised. Hexagonal architecture here is an additional refinement,
+applied uniformly across all three services, motivated directly by the course
+material's own description of a typical microservice's "logical view architecture"
+(business logic at the core, surrounded by inbound adapters that invoke it and
+outbound adapters it invokes in turn).
+
+**What it buys, concretely:**
+- Controllers and use-case classes depend only on ports (interfaces), never on a
+  concrete adapter directly — e.g. `ShipmentController` depends on `ShipmentService`,
+  not on `ShipmentServiceImpl`.
+- The in-memory repositories (`InMemoryShipmentRepository`, etc.) are swappable for a
+  real database implementation of the same port with no change to controllers or
+  use-case classes — directly relevant to the persistence simplification noted in
+  `01-analysis.md §4`.
+- Business logic in each service is unit-testable independently of Express and of the
+  in-memory store.
+
+This is orthogonal to and does not replace the microservices architecture in §4 — it
+is the internal structure *within* each of the three already-identified services.
+
+---
+
+## 6. Traceability Summary
 
 | Requirement | Bounded Context | Service |
 |---|---|---|
