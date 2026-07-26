@@ -126,6 +126,13 @@ docker exec -it shipping-on-the-air-assignment-kafka-1 \
 ### Step 3: Monitor Live Telemetry Dashboards
 
 The system comes pre-configured with Prometheus to automatically scrape container runtimes and application business metrics.
+and also the system will connected automatically the grafana for more observibility.
+
+
+<img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/3adfe8e6-8c2f-4559-8439-535746c62d23" />
+
+
+
 <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/a9463869-66b6-4fc7-babe-6868ce854a48" />
 
 
