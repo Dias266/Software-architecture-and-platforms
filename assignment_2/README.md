@@ -25,7 +25,10 @@ assignment-02/
 │   ├── tracking-service/      ← cross-service CQRS read model
 │   └── mission-service/       ← drone fleet (health + metrics added)
 └── tests/e2e/                 ← end-to-end test through the gateway
-```
+
+
+## cross-service CQRS read model
+<img width="1408" height="768" alt="image" src="https://github.com/user-attachments/assets/10e94c77-b71f-49de-a9c1-41c565b15789" />
 
 ## Run
 
