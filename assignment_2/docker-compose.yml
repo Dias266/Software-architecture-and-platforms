@@ -29,9 +29,10 @@ services:
       - EVENT_STORE_FILE=/app/data/events.jsonl
       - TRACKING_URL=http://tracking-service:3002
     volumes:
-      - order-events:/app/data   # the event log survives restarts
+      # Map container's /app/data directly to your host machine's ./order-events-data folder
+      - ./order-events-data:/app/data
     restart: unless-stopped
-
+    
   tracking-service:
     build: ./services/tracking-service
     container_name: tracking-service
