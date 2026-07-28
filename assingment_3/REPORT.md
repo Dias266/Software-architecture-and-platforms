@@ -98,7 +98,7 @@ Building and loading container images into a local cluster (Kind, Minikube, k3d)
 
 ### 4.1 Model
 
-Autonomous drone control can be modeled with **Belief–Desire–Intention (BDI)**:
+Autonomous drone control modeled with **Belief–Desire–Intention (BDI)**:
 
 - **Beliefs:** Estimated state from sensors (battery, wind, obstacle ranging, distance to drop).
 - **Desires:** Mission goals (“deliver package”, “preserve safe energy reserve”).
