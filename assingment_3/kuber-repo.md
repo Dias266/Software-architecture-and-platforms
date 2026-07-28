@@ -36,13 +36,6 @@ Inspect active Kubernetes Services and their internal cluster IP/port mappings:
 ```bash
 kubectl get services -n shipping-on-the-air
 ```
-
-### Watch Kafka Pods
-Monitor Kafka pod lifecycle events and readiness in real time:
-```bash
-kubectl get pods -n shipping-on-the-air -l app=kafka -w
-```
-
 ---
 
 ## 📜 2. Log Monitoring & Streaming
