@@ -84,10 +84,6 @@ kubectl rollout restart deployment/order-service -n shipping-on-the-air
 ```
 
 ### Clean Up Stale Deployments
-Delete old message broker deployments to prevent image conflicts:
-```bash
-kubectl delete deployment kafka zookeeper -n shipping-on-the-air --ignore-not-found
-```
 
 Delete a specific deployment (`order-service`):
 ```bash
