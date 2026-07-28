@@ -22,7 +22,7 @@ Check the status of running workloads, pods, and network services within the nam
 ### How to start
 create and run 
 ```bash
-kubectl apply -f k8s/kafka.yaml
+kubectl apply -f k8s
 ```
 
 
