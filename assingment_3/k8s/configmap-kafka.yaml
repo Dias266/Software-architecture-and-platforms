@@ -4,4 +4,4 @@ metadata:
   name: shipping-kafka
   namespace: shipping-on-the-air
 data:
-  bootstrap.servers: "kafka:9092"
+  bootstrap.servers: "host.docker.internal:9092"
