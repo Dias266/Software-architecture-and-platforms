@@ -19,6 +19,13 @@ This repository/guide provides a cheat sheet of useful `kubectl` commands for ma
 
 Check the status of running workloads, pods, and network services within the namespace.
 
+### How to start
+create and run 
+```bash
+kubectl apply -f k8s/kafka.yaml
+```
+
+
 ### View All Resources
 View all workloads, services, pods, and deployments created in the namespace:
 ```bash
