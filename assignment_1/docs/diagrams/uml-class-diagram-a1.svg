@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="920" viewBox="0 0 1500 920" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1500" height="920" fill="#ffffff"/>
+  <text x="750" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#111">
+    UML Class Diagram — Shipping on the Air (Assignment #01, Hexagonal Structure)
+  </text>
+
+  <!-- ============ ORDER SERVICE COLUMN ============ -->
+  <g>
+    <text x="240" y="60" text-anchor="middle" font-size="14" font-weight="bold" fill="#1b5e20">order-service</text>
+
+    <!-- Controller -->
+    <rect x="70" y="75" width="340" height="86" fill="#dde9ff" stroke="#3b6fd6" stroke-width="1.4"/>
+    <text x="240" y="93" text-anchor="middle" font-size="11.5" font-weight="bold">«Inbound Adapter»</text>
+    <text x="240" y="108" text-anchor="middle" font-size="12" font-weight="bold">ShipmentController</text>
+    <line x1="70" y1="115" x2="410" y2="115" stroke="#3b6fd6"/>
+    <text x="80" y="130" font-size="9.5">- shipmentService: ShipmentService</text>
+    <line x1="70" y1="136" x2="410" y2="136" stroke="#3b6fd6"/>
+    <text x="80" y="149" font-size="9.5">+ getAll/getById/create/updateStatus/cancel(req,res)</text>
+
+    <!-- Inbound Port -->
+    <rect x="70" y="185" width="340" height="60" fill="#ffe8d6" stroke="#e07b39" stroke-width="1.4"/>
+    <text x="240" y="203" text-anchor="middle" font-size="11.5" font-weight="bold" font-style="italic">«Inbound Port» (interface)</text>
+    <text x="240" y="218" text-anchor="middle" font-size="12" font-weight="bold">ShipmentService</text>
+    <line x1="70" y1="224" x2="410" y2="224" stroke="#e07b39"/>
+    <text x="80" y="238" font-size="9">+ getAllShipments/getById/create/updateStatus/cancel()</text>
+
+    <!-- Impl -->
+    <rect x="70" y="270" width="340" height="86" fill="#fff3cd" stroke="#c9a227" stroke-width="1.4"/>
+    <text x="240" y="288" text-anchor="middle" font-size="11.5" font-weight="bold">«Use Cases»</text>
+    <text x="240" y="303" text-anchor="middle" font-size="12" font-weight="bold">ShipmentServiceImpl</text>
+    <line x1="70" y1="309" x2="410" y2="309" stroke="#c9a227"/>
+    <text x="80" y="323" font-size="9.5">- shipmentRepository: ShipmentRepositoryPort</text>
+    <line x1="70" y1="329" x2="410" y2="329" stroke="#c9a227"/>
+    <text x="80" y="342" font-size="9.5">implements ShipmentService</text>
+
+    <!-- Outbound Port -->
+    <rect x="70" y="380" width="340" height="60" fill="#ffe8d6" stroke="#e07b39" stroke-width="1.4"/>
+    <text x="240" y="398" text-anchor="middle" font-size="11.5" font-weight="bold" font-style="italic">«Outbound Port» (interface)</text>
+    <text x="240" y="413" text-anchor="middle" font-size="12" font-weight="bold">ShipmentRepositoryPort</text>
+    <line x1="70" y1="419" x2="410" y2="419" stroke="#e07b39"/>
+    <text x="80" y="432" font-size="9">+ findAll/findById/save/updateStatus()</text>
+
+    <!-- Adapter -->
+    <rect x="70" y="465" width="340" height="60" fill="#dde9ff" stroke="#3b6fd6" stroke-width="1.4"/>
+    <text x="240" y="483" text-anchor="middle" font-size="11.5" font-weight="bold">«Outbound Adapter»</text>
+    <text x="240" y="498" text-anchor="middle" font-size="12" font-weight="bold">InMemoryShipmentRepository</text>
+    <line x1="70" y1="504" x2="410" y2="504" stroke="#3b6fd6"/>
+    <text x="80" y="517" font-size="9">- shipments: Array&lt;Shipment&gt;</text>
+
+    <!-- arrows -->
+    <line x1="240" y1="161" x2="240" y2="183" stroke="#333" marker-end="url(#assoc)"/>
+    <line x1="240" y1="245" x2="240" y2="268" stroke="#333" stroke-dasharray="4,3" marker-end="url(#impl)"/>
+    <line x1="240" y1="356" x2="240" y2="378" stroke="#333" marker-end="url(#assoc)"/>
+    <line x1="240" y1="440" x2="240" y2="463" stroke="#333" stroke-dasharray="4,3" marker-end="url(#impl)"/>
+  </g>
+
+  <!-- ============ MISSION SERVICE COLUMN ============ -->
+  <g>
+    <text x="750" y="60" text-anchor="middle" font-size="14" font-weight="bold" fill="#1b5e20">mission-service</text>
+
+    <rect x="580" y="75" width="340" height="86" fill="#dde9ff" stroke="#3b6fd6" stroke-width="1.4"/>
+    <text x="750" y="93" text-anchor="middle" font-size="11.5" font-weight="bold">«Inbound Adapter»</text>
+    <text x="750" y="108" text-anchor="middle" font-size="12" font-weight="bold">MissionController</text>
+    <line x1="580" y1="115" x2="920" y2="115" stroke="#3b6fd6"/>
+    <text x="590" y="130" font-size="9.5">- missionService: MissionService</text>
+    <line x1="580" y1="136" x2="920" y2="136" stroke="#3b6fd6"/>
+    <text x="590" y="149" font-size="9.5">+ getAll/create/complete/abort/getDrones(req,res)</text>
+
+    <rect x="580" y="185" width="340" height="60" fill="#ffe8d6" stroke="#e07b39" stroke-width="1.4"/>
+    <text x="750" y="203" text-anchor="middle" font-size="11.5" font-weight="bold" font-style="italic">«Inbound Port» (interface)</text>
+    <text x="750" y="218" text-anchor="middle" font-size="12" font-weight="bold">MissionService</text>
+    <line x1="580" y1="224" x2="920" y2="224" stroke="#e07b39"/>
+    <text x="590" y="238" font-size="9">+ getAllMissions/create/complete/abort/getAllDrones()</text>
+
+    <rect x="580" y="270" width="340" height="86" fill="#fff3cd" stroke="#c9a227" stroke-width="1.4"/>
+    <text x="750" y="288" text-anchor="middle" font-size="11.5" font-weight="bold">«Use Cases»</text>
+    <text x="750" y="303" text-anchor="middle" font-size="12" font-weight="bold">MissionServiceImpl</text>
+    <line x1="580" y1="309" x2="920" y2="309" stroke="#c9a227"/>
+    <text x="590" y="323" font-size="9.5">- missionRepository: MissionRepositoryPort</text>
+    <line x1="580" y1="329" x2="920" y2="329" stroke="#c9a227"/>
+    <text x="590" y="342" font-size="9.5">implements MissionService</text>
+
+    <rect x="580" y="380" width="340" height="60" fill="#ffe8d6" stroke="#e07b39" stroke-width="1.4"/>
+    <text x="750" y="398" text-anchor="middle" font-size="11.5" font-weight="bold" font-style="italic">«Outbound Port» (interface)</text>
+    <text x="750" y="413" text-anchor="middle" font-size="12" font-weight="bold">MissionRepositoryPort</text>
+    <line x1="580" y1="419" x2="920" y2="419" stroke="#e07b39"/>
+    <text x="590" y="432" font-size="9">+ findAllMissions/findById/saveMission/findAvailableDrone()</text>
+
+    <rect x="580" y="465" width="340" height="60" fill="#dde9ff" stroke="#3b6fd6" stroke-width="1.4"/>
+    <text x="750" y="483" text-anchor="middle" font-size="11.5" font-weight="bold">«Outbound Adapter»</text>
+    <text x="750" y="498" text-anchor="middle" font-size="12" font-weight="bold">InMemoryMissionRepository</text>
+    <line x1="580" y1="504" x2="920" y2="504" stroke="#3b6fd6"/>
+    <text x="590" y="517" font-size="9">- missions: Array · - drones: Array</text>
+
+    <line x1="750" y1="161" x2="750" y2="183" stroke="#333" marker-end="url(#assoc)"/>
+    <line x1="750" y1="245" x2="750" y2="268" stroke="#333" stroke-dasharray="4,3" marker-end="url(#impl)"/>
+    <line x1="750" y1="356" x2="750" y2="378" stroke="#333" marker-end="url(#assoc)"/>
+    <line x1="750" y1="440" x2="750" y2="463" stroke="#333" stroke-dasharray="4,3" marker-end="url(#impl)"/>
+  </g>
+
+  <!-- ============ TRACKING SERVICE COLUMN ============ -->
+  <g>
+    <text x="1260" y="60" text-anchor="middle" font-size="14" font-weight="bold" fill="#1b5e20">tracking-service</text>
+
+    <rect x="1090" y="75" width="340" height="86" fill="#dde9ff" stroke="#3b6fd6" stroke-width="1.4"/>
+    <text x="1260" y="93" text-anchor="middle" font-size="11.5" font-weight="bold">«Inbound Adapter»</text>
+    <text x="1260" y="108" text-anchor="middle" font-size="12" font-weight="bold">TrackingController</text>
+    <line x1="1090" y1="115" x2="1430" y2="115" stroke="#3b6fd6"/>
+    <text x="1100" y="130" font-size="9.5">- trackingService: TrackingService</text>
+    <line x1="1090" y1="136" x2="1430" y2="136" stroke="#3b6fd6"/>
+    <text x="1100" y="149" font-size="9.5">+ getTracking/getEvents/addEvent/getEta(req,res)</text>
+
+    <rect x="1090" y="185" width="340" height="60" fill="#ffe8d6" stroke="#e07b39" stroke-width="1.4"/>
+    <text x="1260" y="203" text-anchor="middle" font-size="11.5" font-weight="bold" font-style="italic">«Inbound Port» (interface)</text>
+    <text x="1260" y="218" text-anchor="middle" font-size="12" font-weight="bold">TrackingService</text>
+    <line x1="1090" y1="224" x2="1430" y2="224" stroke="#e07b39"/>
+    <text x="1100" y="238" font-size="9">+ getTrackingRecord/getEvents/addEvent/getEta()</text>
+
+    <rect x="1090" y="270" width="340" height="86" fill="#fff3cd" stroke="#c9a227" stroke-width="1.4"/>
+    <text x="1260" y="288" text-anchor="middle" font-size="11.5" font-weight="bold">«Use Cases»</text>
+    <text x="1260" y="303" text-anchor="middle" font-size="12" font-weight="bold">TrackingServiceImpl</text>
+    <line x1="1090" y1="309" x2="1430" y2="309" stroke="#c9a227"/>
+    <text x="1100" y="323" font-size="9.5">- trackingRepository: TrackingRepositoryPort</text>
+    <line x1="1090" y1="329" x2="1430" y2="329" stroke="#c9a227"/>
+    <text x="1100" y="342" font-size="9.5">implements TrackingService</text>
+
+    <rect x="1090" y="380" width="340" height="60" fill="#ffe8d6" stroke="#e07b39" stroke-width="1.4"/>
+    <text x="1260" y="398" text-anchor="middle" font-size="11.5" font-weight="bold" font-style="italic">«Outbound Port» (interface)</text>
+    <text x="1260" y="413" text-anchor="middle" font-size="12" font-weight="bold">TrackingRepositoryPort</text>
+    <line x1="1090" y1="419" x2="1430" y2="419" stroke="#e07b39"/>
+    <text x="1100" y="432" font-size="9">+ findByShipmentId/saveEvent()</text>
+
+    <rect x="1090" y="465" width="340" height="60" fill="#dde9ff" stroke="#3b6fd6" stroke-width="1.4"/>
+    <text x="1260" y="483" text-anchor="middle" font-size="11.5" font-weight="bold">«Outbound Adapter»</text>
+    <text x="1260" y="498" text-anchor="middle" font-size="12" font-weight="bold">InMemoryTrackingRepository</text>
+    <line x1="1090" y1="504" x2="1430" y2="504" stroke="#3b6fd6"/>
+    <text x="1100" y="517" font-size="9">- trackingRecords: Object</text>
+
+    <line x1="1260" y1="161" x2="1260" y2="183" stroke="#333" marker-end="url(#assoc)"/>
+    <line x1="1260" y1="245" x2="1260" y2="268" stroke="#333" stroke-dasharray="4,3" marker-end="url(#impl)"/>
+    <line x1="1260" y1="356" x2="1260" y2="378" stroke="#333" marker-end="url(#assoc)"/>
+    <line x1="1260" y1="440" x2="1260" y2="463" stroke="#333" stroke-dasharray="4,3" marker-end="url(#impl)"/>
+  </g>
+
+  <!-- Legend -->
+  <rect x="70" y="560" width="1360" height="90" rx="6" fill="#fafafa" stroke="#ccc"/>
+  <text x="90" y="582" font-size="11" font-weight="bold">Legend</text>
+  <line x1="90" y1="598" x2="130" y2="598" stroke="#333" marker-end="url(#assoc)"/>
+  <text x="138" y="602" font-size="10">association / uses (calls)</text>
+  <line x1="330" y1="598" x2="370" y2="598" stroke="#333" stroke-dasharray="4,3" marker-end="url(#impl)"/>
+  <text x="378" y="602" font-size="10">realization / implements</text>
+  <rect x="560" y="590" width="16" height="14" fill="#dde9ff" stroke="#3b6fd6"/>
+  <text x="583" y="602" font-size="10">Adapter (touches Express or storage directly)</text>
+  <rect x="850" y="590" width="16" height="14" fill="#ffe8d6" stroke="#e07b39"/>
+  <text x="873" y="602" font-size="10">Port (interface, no logic)</text>
+  <rect x="1050" y="590" width="16" height="14" fill="#fff3cd" stroke="#c9a227"/>
+  <text x="1073" y="602" font-size="10">Impl (use-case / business logic)</text>
+  <text x="90" y="625" font-size="9.5" fill="#555">
+    Note: each service has an IDENTICAL structural shape — only the domain-specific method names and stored fields differ.
+  </text>
+  <text x="90" y="640" font-size="9.5" fill="#555">
+    No shared code, database, or class between services — each is independently deployable per the microservices architectural style (02-design.md §4).
+  </text>
+
+  <defs>
+    <marker id="assoc" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#333"/>
+    </marker>
+    <marker id="impl" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="none" stroke="#333" stroke-width="1"/>
+    </marker>
+  </defs>
+</svg>

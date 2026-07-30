@@ -93,6 +93,11 @@ graph LR
     Order -. "Separate Ways<br/>correlated only by shipmentId" .-> Tracking
 ```
 
+**Important note on the arrows above:** these describe the *conceptual* context
+relationships — what data/events *would* flow between contexts in a fully realised
+system. See §4.1 below for exactly which of these are actually automated by code in
+this prototype, versus which require an explicit external trigger.
+
 ---
 
 ## 3. Tactical Design
@@ -159,11 +164,77 @@ graph TB
 
     User --> FE
     FE -- REST/JSON --> OS
-    FE -- REST/JSON --> MS
-    FE -- REST/JSON --> TS
-    OS -- "POST /missions<br/>(dispatch on ShipmentPlaced)" --> MS
-    MS -- "POST /track/:id/events<br/>(publish mission events)" --> TS
+    User -. "POST /missions<br/>(manual/external trigger — see §4.1)" .-> MS
+    User -. "POST /track/:id/events<br/>(manual/external trigger — see §4.1)" .-> TS
     User -.-> Docs
+```
+
+### 4.1 What is and isn't automated in this prototype
+
+**This is important and is stated explicitly here to avoid any ambiguity:**
+`order-service` does **not** automatically call `mission-service` when a shipment is
+placed, and `mission-service` does **not** automatically call `tracking-service` when
+a mission starts. Each service only exposes its own REST API; nothing in the code
+performs the cross-service call implied by the conceptual context map in §2.
+
+Concretely, a shipment created via `POST /shipments` will remain in `PENDING`
+indefinitely unless a client (a human tester, a script, or in a production system: an
+orchestrator or event consumer) explicitly issues the follow-up calls:
+`POST /missions` (dispatch) and `POST /track/:id/events` (tracking update).
+
+**This is a deliberate scope decision for the prototype, not an oversight:**
+implementing real cross-service dispatch — whether via direct synchronous calls or,
+preferably, via an event broker as described below — was judged out of scope for
+Assignment #01, whose primary focus (per the assignment brief) is the DDD analysis and
+the microservices decomposition itself, not full inter-service orchestration. The
+sequence diagram in §4.2 documents the actual, current step-by-step flow, driven by an
+external client rather than automatically by the services.
+
+A production system would close this gap in one of two ways, both consistent with the
+domain event model already defined in §2–3: (a) `order-service` synchronously calling
+`mission-service`'s API directly, or (b) publishing `ShipmentPlaced` as a real event to
+a broker (see the Kafka discussion in §4.4) for `mission-service` to consume
+independently — the latter is the direction taken in Assignment #03.
+
+### 4.2 Sequence diagram: actual current behavior
+
+This shows the real, current step-by-step flow — an external client (a person testing
+the API, a script, or the frontend for the one step it covers) drives every
+transition. No arrow below happens without an explicit request from outside the
+services.
+
+```mermaid
+sequenceDiagram
+    actor Client as Client (frontend / curl / Postman)
+    participant OS as order-service
+    participant MS as mission-service
+    participant TS as tracking-service
+
+    Client->>OS: POST /shipments
+    OS-->>Client: 201 Created { id: SHP-xxx, status: PENDING }
+    Note over OS: Shipment stored in-memory.<br/>No automatic follow-up call is made.
+
+    rect rgb(255, 245, 230)
+    Note over Client,TS: Everything below requires an explicit,<br/>separate client action — it does not happen on its own.
+    end
+
+    Client->>OS: POST /shipments/:id/confirm (if implemented)
+    OS-->>Client: 200 OK { status: CONFIRMED }
+
+    Client->>MS: POST /missions { shipmentId, origin, destination, packageWeight }
+    MS->>MS: select AVAILABLE drone, compute route
+    MS-->>Client: 201 Created { id: MSN-xxx, droneId, status: IN_PROGRESS }
+    Note over MS: mission-service has no reference back to<br/>order-service's shipment status — it does not update it.
+
+    Client->>TS: POST /track/:shipmentId/events { type: "MISSION_STARTED", ... }
+    TS-->>Client: 201 Created
+    Note over TS: tracking-service only knows what it is explicitly told.<br/>It does not poll or subscribe to mission-service.
+
+    Client->>MS: PATCH /missions/:id/complete
+    MS-->>Client: 200 OK { status: COMPLETED }
+
+    Client->>TS: POST /track/:shipmentId/events { type: "DELIVERED", progress: 100 }
+    TS-->>Client: 201 Created
 ```
 
 ### Deployment view (Docker Compose)
@@ -193,26 +264,29 @@ graph TB
     C1 -.depends_on.-> C4
 ```
 
-### Communication style
+### 4.4 Communication style
 
-The current prototype uses **synchronous REST/JSON** for all inter-service calls
-(`order-service → mission-service → tracking-service`), which is simple to run and
-demo locally.
+The current prototype uses **synchronous REST/JSON** for every API, and — per §4.1 —
+does not itself chain calls between services; each cross-context transition (dispatch,
+tracking update) is triggered explicitly by whatever client is driving the system.
 
-This is a deliberate, documented simplification: the DDD context map above
-(§2, "Published Language" between Mission and Tracking) implies an **event-driven**
-integration style would be architecturally preferable in production — decoupling
+This is a deliberate, documented simplification: the DDD context map in §2 (e.g.
+"Published Language" between Mission and Tracking) implies that, in a complete system,
+these transitions would happen automatically — either via direct service-to-service
+calls or, architecturally preferably, via **event-driven** integration, decoupling
 publishers from subscribers and improving the partial-failure tolerance required by
-NFR-3. The code already marks these seams explicitly, e.g.:
+NFR-3. The code already marks this intended seam explicitly, e.g.:
 
 ```js
 // In production: publish ShipmentPlaced event to Kafka here
 ```
 
 A production evolution would introduce a message broker (e.g. Kafka) and have
-`order-service` and `mission-service` publish domain events rather than making direct
-HTTP calls to their downstream context, with `tracking-service` (and any future
-consumer) subscribing independently.
+`order-service` and `mission-service` publish domain events rather than requiring an
+external client to chain the calls, with `tracking-service` (and any future consumer)
+subscribing independently. **This is exactly the direction taken in Assignment #03**,
+where `order-service` publishes `OrderCreated` to Kafka and a dedicated
+`shipment-orchestrator` service consumes it automatically.
 
 ### API contracts
 
@@ -292,7 +366,7 @@ is the internal structure *within* each of the three already-identified services
 | FR-5, FR-6, FR-9 | Mission/Dispatch | `mission-service` |
 | FR-7, FR-8 | Tracking | `tracking-service` |
 | NFR-1, NFR-2, NFR-3 | — (cross-cutting) | service boundary design |
-| NFR-4 | — (cross-cutting) | domain event design (§3) |
+| NFR-4 | — (cross-cutting) | domain event design (§3); current manual-trigger limitation documented in §4.1 |
 | NFR-5 | — (cross-cutting) | `openapi.yaml` |
 | NFR-6 | Tracking | `tracking-service` |
 | NFR-7 | — (cross-cutting) | `docker-compose.yml` |

@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1100" height="620" fill="#ffffff"/>
+  <text x="550" y="28" text-anchor="middle" font-size="17" font-weight="bold" fill="#111">Use Case Diagram — Shipping on the Air (Assignment #01)</text>
+
+  <!-- System boundary -->
+  <rect x="180" y="55" width="740" height="500" fill="none" stroke="#333" stroke-width="1.5"/>
+  <text x="550" y="75" text-anchor="middle" font-size="12" font-weight="bold">Shipping on the Air System</text>
+
+  <!-- Actors -->
+  <g text-anchor="middle" font-size="10">
+    <!-- Customer -->
+    <circle cx="70" cy="140" r="10" fill="none" stroke="#333"/>
+    <line x1="70" y1="150" x2="70" y2="185" stroke="#333"/>
+    <line x1="45" y1="163" x2="95" y2="163" stroke="#333"/>
+    <line x1="70" y1="185" x2="50" y2="210" stroke="#333"/>
+    <line x1="70" y1="185" x2="90" y2="210" stroke="#333"/>
+    <text x="70" y="228" font-weight="bold">Customer</text>
+
+    <!-- System Operator -->
+    <circle cx="70" cy="330" r="10" fill="none" stroke="#333"/>
+    <line x1="70" y1="340" x2="70" y2="375" stroke="#333"/>
+    <line x1="45" y1="353" x2="95" y2="353" stroke="#333"/>
+    <line x1="70" y1="375" x2="50" y2="400" stroke="#333"/>
+    <line x1="70" y1="375" x2="90" y2="400" stroke="#333"/>
+    <text x="70" y="418" font-weight="bold">System Operator</text>
+  </g>
+
+  <!-- Use cases: Booking -->
+  <g font-size="10" text-anchor="middle">
+    <ellipse cx="330" cy="110" rx="105" ry="28" fill="#e4f0ff" stroke="#3b6fd6"/>
+    <text x="330" y="114">Create Shipment</text>
+
+    <ellipse cx="330" cy="180" rx="105" ry="28" fill="#e4f0ff" stroke="#3b6fd6"/>
+    <text x="330" y="176">View Shipment</text>
+    <text x="330" y="189">Status</text>
+
+    <ellipse cx="330" cy="250" rx="105" ry="28" fill="#e4f0ff" stroke="#3b6fd6"/>
+    <text x="330" y="254">Cancel Shipment</text>
+  </g>
+
+  <!-- Use cases: Mission -->
+  <g font-size="10" text-anchor="middle">
+    <ellipse cx="550" cy="320" rx="105" ry="28" fill="#f4e2cf" stroke="#b5601b"/>
+    <text x="550" y="316">Dispatch Mission</text>
+    <text x="550" y="329">(assign drone + route)</text>
+
+    <ellipse cx="550" cy="390" rx="105" ry="28" fill="#f4e2cf" stroke="#b5601b"/>
+    <text x="550" y="394">Complete / Abort Mission</text>
+
+    <ellipse cx="550" cy="460" rx="105" ry="28" fill="#f4e2cf" stroke="#b5601b"/>
+    <text x="550" y="464">Inspect Fleet</text>
+  </g>
+
+  <!-- Use cases: Tracking -->
+  <g font-size="10" text-anchor="middle">
+    <ellipse cx="800" cy="180" rx="105" ry="28" fill="#e0f5e4" stroke="#2f9e44"/>
+    <text x="800" y="176">Track Shipment</text>
+    <text x="800" y="189">(location, progress, log)</text>
+
+    <ellipse cx="800" cy="250" rx="105" ry="28" fill="#e0f5e4" stroke="#2f9e44"/>
+    <text x="800" y="254">Query ETA</text>
+
+    <ellipse cx="800" cy="320" rx="105" ry="28" fill="#e0f5e4" stroke="#2f9e44"/>
+    <text x="800" y="316">Record Tracking</text>
+    <text x="800" y="329">Event (manual)</text>
+  </g>
+
+  <!-- actor -> use case lines -->
+  <line x1="95" y1="150" x2="228" y2="115" stroke="#333"/>
+  <line x1="95" y1="155" x2="228" y2="185" stroke="#333"/>
+  <line x1="95" y1="160" x2="228" y2="252" stroke="#333"/>
+  <line x1="95" y1="165" x2="698" y2="182" stroke="#333"/>
+  <line x1="95" y1="170" x2="698" y2="252" stroke="#333"/>
+
+  <line x1="95" y1="345" x2="448" y2="322" stroke="#333"/>
+  <line x1="95" y1="350" x2="448" y2="390" stroke="#333"/>
+  <line x1="95" y1="355" x2="448" y2="460" stroke="#333"/>
+  <line x1="95" y1="360" x2="698" y2="322" stroke="#333"/>
+
+  <!-- includes/extends relationships -->
+  <line x1="435" y1="115" x2="448" y2="315" stroke="#888" stroke-dasharray="4,3" marker-end="url(#uarrow)"/>
+  <text x="480" y="220" font-size="8.5" fill="#666" font-style="italic">«manual trigger — NOT «include»,</text>
+  <text x="480" y="232" font-size="8.5" fill="#666" font-style="italic">no automatic call (§4.1)»</text>
+
+  <line x1="655" y1="320" x2="698" y2="318" stroke="#888" stroke-dasharray="4,3" marker-end="url(#uarrow)"/>
+  <text x="660" y="305" font-size="8" fill="#666" font-style="italic">«manual trigger»</text>
+
+  <!-- Legend -->
+  <rect x="180" y="565" width="740" height="45" fill="#fafafa" stroke="#ccc"/>
+  <text x="195" y="583" font-size="9.5" font-weight="bold">Legend:</text>
+  <text x="195" y="598" font-size="9" fill="#555">
+    Blue = Booking (order-service) · Orange = Mission/Dispatch (mission-service) · Green = Tracking (tracking-service)
+  </text>
+  <text x="600" y="598" font-size="9" fill="#8a2418" font-style="italic">
+    Dashed arrows = manual trigger only, not automated (see 02-design.md §4.1)
+  </text>
+
+  <defs>
+    <marker id="uarrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#888"/>
+    </marker>
+  </defs>
+</svg>

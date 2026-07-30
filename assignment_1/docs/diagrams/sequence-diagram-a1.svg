@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="720" viewBox="0 0 1100 720" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1100" height="720" fill="#ffffff"/>
+  <text x="550" y="28" text-anchor="middle" font-size="17" font-weight="bold" fill="#111">
+    Sequence Diagram — Shipment Lifecycle (Assignment #01, actual current behavior)
+  </text>
+  <text x="550" y="48" text-anchor="middle" font-size="11" fill="#555">
+    Matches 02-design.md §4.2. Every arrow below is triggered explicitly by the client — nothing happens automatically.
+  </text>
+
+  <!-- Lifelines -->
+  <g font-size="11" font-weight="bold" text-anchor="middle">
+    <rect x="30" y="65" width="150" height="30" fill="#f4d9c6" stroke="#b5601b"/>
+    <text x="105" y="85">Client (frontend / curl / Postman)</text>
+
+    <rect x="330" y="65" width="140" height="30" fill="#eaf7ee" stroke="#2f9e44"/>
+    <text x="400" y="85">order-service</text>
+
+    <rect x="600" y="65" width="140" height="30" fill="#eaf7ee" stroke="#2f9e44"/>
+    <text x="670" y="85">mission-service</text>
+
+    <rect x="870" y="65" width="140" height="30" fill="#eaf7ee" stroke="#2f9e44"/>
+    <text x="940" y="85">tracking-service</text>
+  </g>
+
+  <!-- lifelines (vertical dashed) -->
+  <line x1="105" y1="95" x2="105" y2="680" stroke="#999" stroke-dasharray="3,3"/>
+  <line x1="400" y1="95" x2="400" y2="680" stroke="#999" stroke-dasharray="3,3"/>
+  <line x1="670" y1="95" x2="670" y2="680" stroke="#999" stroke-dasharray="3,3"/>
+  <line x1="940" y1="95" x2="940" y2="680" stroke="#999" stroke-dasharray="3,3"/>
+
+  <!-- Step 1: create shipment -->
+  <line x1="105" y1="130" x2="398" y2="130" stroke="#333" stroke-width="1.4" marker-end="url(#msg)"/>
+  <text x="250" y="123" text-anchor="middle" font-size="10">POST /shipments</text>
+  <line x1="400" y1="150" x2="107" y2="150" stroke="#555" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#msg)"/>
+  <text x="250" y="145" text-anchor="middle" font-size="9.5" fill="#555">201 { id: SHP-xxx, status: PENDING }</text>
+  <text x="410" y="170" font-size="9" fill="#777" font-style="italic">Shipment stored in-memory. No follow-up call is made automatically.</text>
+
+  <!-- warning band -->
+  <rect x="30" y="195" width="1040" height="40" fill="#fdecea" stroke="#c0392b"/>
+  <text x="550" y="220" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#8a2418">
+    ⚠ Everything below requires a SEPARATE, explicit client action — it does not happen on its own
+  </text>
+
+  <!-- Step 2: confirm -->
+  <line x1="105" y1="260" x2="398" y2="260" stroke="#333" stroke-width="1.4" marker-end="url(#msg)"/>
+  <text x="250" y="253" text-anchor="middle" font-size="10">POST /shipments/:id/confirm</text>
+  <line x1="400" y1="278" x2="107" y2="278" stroke="#555" stroke-dasharray="5,3" marker-end="url(#msg)"/>
+  <text x="250" y="273" text-anchor="middle" font-size="9.5" fill="#555">200 { status: CONFIRMED }</text>
+
+  <!-- Step 3: create mission -->
+  <line x1="105" y1="320" x2="668" y2="320" stroke="#333" stroke-width="1.4" marker-end="url(#msg)"/>
+  <text x="390" y="313" text-anchor="middle" font-size="10">POST /missions { shipmentId, origin, destination, packageWeight }</text>
+  <rect x="640" y="330" width="60" height="20" fill="#fff3cd" stroke="#c9a227"/>
+  <text x="670" y="344" text-anchor="middle" font-size="8.5">select drone,</text>
+  <text x="670" y="700" font-size="0"/>
+  <line x1="670" y1="365" x2="107" y2="365" stroke="#555" stroke-dasharray="5,3" marker-end="url(#msg)"/>
+  <text x="390" y="360" text-anchor="middle" font-size="9.5" fill="#555">201 { id: MSN-xxx, droneId, status: IN_PROGRESS }</text>
+  <text x="750" y="382" font-size="9" fill="#777" font-style="italic">mission-service has no reference back to</text>
+  <text x="750" y="394" font-size="9" fill="#777" font-style="italic">order-service — it never updates the shipment.</text>
+
+  <!-- Step 4: post tracking event -->
+  <line x1="105" y1="430" x2="938" y2="430" stroke="#333" stroke-width="1.4" marker-end="url(#msg)"/>
+  <text x="520" y="423" text-anchor="middle" font-size="10">POST /track/:shipmentId/events { type: "MISSION_STARTED", ... }</text>
+  <line x1="940" y1="448" x2="107" y2="448" stroke="#555" stroke-dasharray="5,3" marker-end="url(#msg)"/>
+  <text x="520" y="443" text-anchor="middle" font-size="9.5" fill="#555">201 Created</text>
+  <text x="750" y="465" font-size="9" fill="#777" font-style="italic">tracking-service only knows what it's explicitly told —</text>
+  <text x="750" y="477" font-size="9" fill="#777" font-style="italic">it does not poll or subscribe to mission-service.</text>
+
+  <!-- Step 5: complete mission -->
+  <line x1="105" y1="515" x2="668" y2="515" stroke="#333" stroke-width="1.4" marker-end="url(#msg)"/>
+  <text x="390" y="508" text-anchor="middle" font-size="10">PATCH /missions/:id/complete</text>
+  <line x1="670" y1="533" x2="107" y2="533" stroke="#555" stroke-dasharray="5,3" marker-end="url(#msg)"/>
+  <text x="390" y="528" text-anchor="middle" font-size="9.5" fill="#555">200 { status: COMPLETED }</text>
+
+  <!-- Step 6: post delivered event -->
+  <line x1="105" y1="575" x2="938" y2="575" stroke="#333" stroke-width="1.4" marker-end="url(#msg)"/>
+  <text x="520" y="568" text-anchor="middle" font-size="10">POST /track/:shipmentId/events { type: "DELIVERED", progress: 100 }</text>
+  <line x1="940" y1="593" x2="107" y2="593" stroke="#555" stroke-dasharray="5,3" marker-end="url(#msg)"/>
+  <text x="520" y="588" text-anchor="middle" font-size="9.5" fill="#555">201 Created</text>
+
+  <text x="105" y="630" font-size="9" fill="#777" font-style="italic">Note: order-service's own "status" field (PENDING/CONFIRMED/...) is never</text>
+  <text x="105" y="643" font-size="9" fill="#777" font-style="italic">updated past CONFIRMED by this flow — tracking-service's record is the</text>
+  <text x="105" y="656" font-size="9" fill="#777" font-style="italic">only place "DELIVERED" is actually reflected in this prototype.</text>
+
+  <defs>
+    <marker id="msg" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#333"/>
+    </marker>
+  </defs>
+</svg>
