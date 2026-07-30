@@ -77,10 +77,21 @@ class InMemoryTrackingRepository extends TrackingRepositoryPort {
 }
 
 // ==============================================================================
-// 3. INBOUND PORT / DOMAIN SERVICE (Application Logic)
+// 3a. INBOUND PORT (Application Service Interface)
 // ==============================================================================
 class TrackingService {
+  async getTrackingRecord(_shipmentId) { throw new Error("Method not implemented"); }
+  async getEvents(_shipmentId) { throw new Error("Method not implemented"); }
+  async addEvent(_shipmentId, _eventDto) { throw new Error("Method not implemented"); }
+  async getEta(_shipmentId) { throw new Error("Method not implemented"); }
+}
+
+// ==============================================================================
+// 3b. INBOUND PORT IMPLEMENTATION (Use Cases / Application Logic)
+// ==============================================================================
+class TrackingServiceImpl extends TrackingService {
   constructor(trackingRepository) {
+    super();
     this.trackingRepository = trackingRepository;
   }
 
@@ -154,28 +165,34 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Wiring components together (Dependency Injection)
 const trackingRepository = new InMemoryTrackingRepository();
-const trackingService = new TrackingService(trackingRepository);
+const trackingService = new TrackingServiceImpl(trackingRepository);
 const controller = new TrackingController(trackingService);
 
-// Health check
 app.get("/health", (req, res) => {
   res.json({ service: "tracking-service", status: "ok", version: "1.0.0" });
 });
 
-// Routes
 app.get("/track/:shipmentId", controller.getTracking);
 app.get("/track/:shipmentId/events", controller.getEvents);
 app.post("/track/:shipmentId/events", controller.addEvent);
 app.get("/track/:shipmentId/eta", controller.getEta);
 
-// Centralized Error Middleware
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: err.message || "Internal server error" });
 });
 
-const PORT = process.env.PORT || 3002;
-app.listen(PORT, () => {
-  console.log(`[tracking-service] running on http://localhost:${PORT}`);
-});
+module.exports = {
+  app,
+  TrackingService,
+  TrackingServiceImpl,
+  TrackingRepositoryPort,
+  InMemoryTrackingRepository,
+};
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 3002;
+  app.listen(PORT, () => {
+    console.log(`[tracking-service] running on http://localhost:${PORT}`);
+  });
+}

@@ -84,10 +84,24 @@ class InMemoryMissionRepository extends MissionRepositoryPort {
 }
 
 // ==============================================================================
-// 3. INBOUND PORT / DOMAIN SERVICE (Application Logic)
+// 3a. INBOUND PORT (Application Service Interface)
 // ==============================================================================
 class MissionService {
+  async getAllMissions() { throw new Error("Method not implemented"); }
+  async getMissionById(_id) { throw new Error("Method not implemented"); }
+  async getMissionByShipment(_shipmentId) { throw new Error("Method not implemented"); }
+  async createMission(_dto) { throw new Error("Method not implemented"); }
+  async completeMission(_id) { throw new Error("Method not implemented"); }
+  async abortMission(_id) { throw new Error("Method not implemented"); }
+  async getAllDrones() { throw new Error("Method not implemented"); }
+}
+
+// ==============================================================================
+// 3b. INBOUND PORT IMPLEMENTATION (Use Cases / Application Logic)
+// ==============================================================================
+class MissionServiceImpl extends MissionService {
   constructor(missionRepository) {
+    super();
     this.missionRepository = missionRepository;
   }
 
@@ -237,17 +251,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Wiring components together (Dependency Injection)
 const missionRepository = new InMemoryMissionRepository();
-const missionService = new MissionService(missionRepository);
+const missionService = new MissionServiceImpl(missionRepository);
 const controller = new MissionController(missionService);
 
-// Health check
 app.get("/health", (req, res) => {
   res.json({ service: "mission-service", status: "ok", version: "1.0.0" });
 });
 
-// Routes
 app.get("/missions", controller.getAll);
 app.get("/missions/:id", controller.getById);
 app.get("/missions/by-shipment/:shipmentId", controller.getByShipment);
@@ -256,12 +267,21 @@ app.patch("/missions/:id/complete", controller.complete);
 app.patch("/missions/:id/abort", controller.abort);
 app.get("/drones", controller.getDrones);
 
-// Centralized Error Middleware
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: err.message || "Internal server error" });
 });
 
-const PORT = process.env.PORT || 3003;
-app.listen(PORT, () => {
-  console.log(`[mission-service] running on http://localhost:${PORT}`);
-});
+module.exports = {
+  app,
+  MissionService,
+  MissionServiceImpl,
+  MissionRepositoryPort,
+  InMemoryMissionRepository,
+};
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 3003;
+  app.listen(PORT, () => {
+    console.log(`[mission-service] running on http://localhost:${PORT}`);
+  });
+}

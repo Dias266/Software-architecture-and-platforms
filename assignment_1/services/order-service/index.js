@@ -65,10 +65,22 @@ class InMemoryShipmentRepository extends ShipmentRepositoryPort {
 }
 
 // ==============================================================================
-// 3. INBOUND PORT / DOMAIN SERVICE (Application Logic)
+// 3a. INBOUND PORT (Application Service Interface)
 // ==============================================================================
 class ShipmentService {
+  async getAllShipments() { throw new Error("Method not implemented"); }
+  async getShipmentById(_id) { throw new Error("Method not implemented"); }
+  async createShipment(_dto) { throw new Error("Method not implemented"); }
+  async updateShipmentStatus(_id, _status) { throw new Error("Method not implemented"); }
+  async cancelShipment(_id) { throw new Error("Method not implemented"); }
+}
+
+// ==============================================================================
+// 3b. INBOUND PORT IMPLEMENTATION (Use Cases / Application Logic)
+// ==============================================================================
+class ShipmentServiceImpl extends ShipmentService {
   constructor(shipmentRepository) {
+    super();
     this.shipmentRepository = shipmentRepository;
   }
 
@@ -103,10 +115,10 @@ class ShipmentService {
     };
 
     const saved = await this.shipmentRepository.save(shipment);
-    
+
     // In production: publish ShipmentPlaced event to Kafka/EventBridge here
     console.log(`[order-service] ShipmentPlaced: ${shipment.id}`);
-    
+
     return saved;
   }
 
@@ -182,29 +194,35 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Wiring components together (Dependency Injection)
 const shipmentRepository = new InMemoryShipmentRepository();
-const shipmentService = new ShipmentService(shipmentRepository);
+const shipmentService = new ShipmentServiceImpl(shipmentRepository);
 const controller = new ShipmentController(shipmentService);
 
-// Health check
 app.get("/health", (req, res) => {
   res.json({ service: "order-service", status: "ok", version: "1.0.0" });
 });
 
-// Routes
 app.get("/shipments", controller.getAll);
 app.get("/shipments/:id", controller.getById);
 app.post("/shipments", controller.create);
 app.patch("/shipments/:id/status", controller.updateStatus);
 app.delete("/shipments/:id", controller.cancel);
 
-// Centralized Error Middleware
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: err.message || "Internal server error" });
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`[order-service] running on http://localhost:${PORT}`);
-});
+module.exports = {
+  app,
+  ShipmentService,
+  ShipmentServiceImpl,
+  ShipmentRepositoryPort,
+  InMemoryShipmentRepository,
+};
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log(`[order-service] running on http://localhost:${PORT}`);
+  });
+}
