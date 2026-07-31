@@ -1,0 +1,252 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="960" viewBox="0 0 1400 960" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1400" height="960" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="700" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#111">
+    OVERALL ARCHITECTURE BLUEPRINT: SHIPPING ON THE AIR (DDD + MICROSERVICES + RESTFUL HTTP)
+  </text>
+
+  <!-- ============ SECTION 1: DDD LOGICAL CONTEXT MAP ============ -->
+  <rect x="230" y="50" width="1140" height="140" fill="none" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="245" y="68" font-size="13" font-weight="bold" fill="#111">1. DDD LOGICAL CONTEXT MAP — 3 BOUNDED CONTEXTS</text>
+  <text x="700" y="68" font-size="11" fill="#555" text-anchor="middle">(corrected from 5 to 3 — see 01-analysis.md / 02-design.md §2)</text>
+
+  <g>
+    <rect x="270" y="86" width="230" height="85" rx="6" fill="#dbe9ff" stroke="#3b6fd6" stroke-width="1.5"/>
+    <text x="385" y="105" text-anchor="middle" font-size="10" fill="#333">Bounded Context</text>
+    <text x="385" y="124" text-anchor="middle" font-size="15" font-weight="bold" fill="#123a7a">Booking</text>
+    <text x="385" y="140" text-anchor="middle" font-size="10" fill="#333">(Order Management)</text>
+    <text x="385" y="155" text-anchor="middle" font-size="10" fill="#555">order-service</text>
+  </g>
+
+  <g>
+    <rect x="585" y="86" width="230" height="85" rx="6" fill="#dbe9ff" stroke="#3b6fd6" stroke-width="1.5"/>
+    <text x="700" y="105" text-anchor="middle" font-size="10" fill="#333">Bounded Context</text>
+    <text x="700" y="124" text-anchor="middle" font-size="15" font-weight="bold" fill="#123a7a">Mission / Dispatch</text>
+    <text x="700" y="140" text-anchor="middle" font-size="10" fill="#333">(Route Planning + Fleet Mgmt)</text>
+    <text x="700" y="155" text-anchor="middle" font-size="10" fill="#555">mission-service</text>
+  </g>
+
+  <g>
+    <rect x="900" y="86" width="230" height="85" rx="6" fill="#dbe9ff" stroke="#3b6fd6" stroke-width="1.5"/>
+    <text x="1015" y="105" text-anchor="middle" font-size="10" fill="#333">Bounded Context</text>
+    <text x="1015" y="124" text-anchor="middle" font-size="15" font-weight="bold" fill="#123a7a">Tracking</text>
+    <text x="1015" y="140" text-anchor="middle" font-size="10" fill="#333">(Tracking &amp; Notifications)</text>
+    <text x="1015" y="155" text-anchor="middle" font-size="10" fill="#555">tracking-service</text>
+  </g>
+
+  <line x1="500" y1="128" x2="583" y2="128" stroke="#333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="541" y="120" text-anchor="middle" font-size="10" fill="#333">Customer/Supplier</text>
+
+  <line x1="815" y1="128" x2="898" y2="128" stroke="#333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="856" y="120" text-anchor="middle" font-size="10" fill="#333">Published Language</text>
+
+  <path d="M 385 171 Q 700 190 1015 171" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="5,4"/>
+
+  <!-- ============ CLIENT FLOW ROW (between the two sections) ============ -->
+  <rect x="230" y="196" width="1140" height="118" fill="#fdf3f0" stroke="#c0392b" stroke-width="1.3" stroke-dasharray="3,3"/>
+  <text x="245" y="212" font-size="11" font-weight="bold" fill="#8a2418">
+    Who actually connects the services? A single external client — carrying data forward itself, call by call.
+  </text>
+
+  <g>
+    <rect x="600" y="220" width="200" height="34" rx="6" fill="#ffe0b2" stroke="#e07b39" stroke-width="1.5"/>
+    <text x="700" y="234" text-anchor="middle" font-size="10" font-weight="bold">EXTERNAL CLIENT</text>
+    <text x="700" y="248" text-anchor="middle" font-size="8.5">(curl / Postman / tester)</text>
+  </g>
+
+  <!-- Call 1: client -> order-service -->
+  <line x1="650" y1="254" x2="410" y2="313" stroke="#c0392b" stroke-width="1.6" marker-end="url(#arrowRed)"/>
+  <text x="500" y="270" text-anchor="middle" font-size="8.5" fill="#8a2418" font-weight="bold">① POST /shipments</text>
+  <text x="500" y="282" text-anchor="middle" font-size="8" fill="#5a1c12">client receives back: shipmentId</text>
+
+  <!-- Call 2: client -> mission-service, carrying shipmentId -->
+  <line x1="700" y1="254" x2="710" y2="313" stroke="#c0392b" stroke-width="1.6" marker-end="url(#arrowRed)"/>
+  <text x="700" y="270" text-anchor="middle" font-size="8.5" fill="#8a2418" font-weight="bold">② POST /missions { shipmentId }</text>
+  <text x="700" y="282" text-anchor="middle" font-size="8" fill="#5a1c12">client passes in the shipmentId from ①; receives back: droneId</text>
+
+  <!-- Call 3: client -> tracking-service, carrying shipmentId -->
+  <line x1="760" y1="254" x2="1010" y2="313" stroke="#c0392b" stroke-width="1.6" marker-end="url(#arrowRed)"/>
+  <text x="900" y="270" text-anchor="middle" font-size="8.5" fill="#8a2418" font-weight="bold">③ POST /track/:shipmentId/events</text>
+  <text x="900" y="282" text-anchor="middle" font-size="8" fill="#5a1c12">client passes in the shipmentId from ①</text>
+
+  <text x="700" y="303" text-anchor="middle" font-size="8.5" fill="#5a1c12" font-style="italic">
+    The services never exchange this data directly — the CLIENT is the one holding shipmentId / droneId in memory between calls, and re-sends them itself.
+  </text>
+
+  <!-- ============ SECTION 2: PHYSICAL ARCHITECTURE ============ -->
+  <rect x="230" y="314" width="1140" height="470" fill="none" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="245" y="332" font-size="13" font-weight="bold" fill="#111">2. PHYSICAL ARCHITECTURE &amp; MICROSERVICES CLUSTER</text>
+  <text x="1050" y="332" font-size="11" fill="#555">Hexagonal (Ports &amp; Adapters) per service</text>
+
+  <!-- Order Service -->
+  <g>
+    <rect x="255" y="352" width="290" height="410" rx="6" fill="#eaf7ee" stroke="#2f9e44" stroke-width="1.5"/>
+    <text x="400" y="374" text-anchor="middle" font-size="13" font-weight="bold" fill="#1b5e20">ORDER SERVICE</text>
+    <text x="400" y="390" text-anchor="middle" font-size="10" fill="#333">(Node/Express, Port 3001)</text>
+
+    <rect x="270" y="402" width="260" height="26" fill="#fff3cd" stroke="#c9a227"/>
+    <text x="400" y="419" text-anchor="middle" font-size="10.5" font-weight="bold">POST /shipments · GET /shipments/:id</text>
+
+    <rect x="270" y="438" width="260" height="30" fill="#dde9ff" stroke="#3b6fd6"/>
+    <text x="400" y="457" text-anchor="middle" font-size="10">Inbound Adapter — ShipmentController</text>
+
+    <rect x="270" y="476" width="260" height="30" fill="#ffe8d6" stroke="#e07b39"/>
+    <text x="400" y="495" text-anchor="middle" font-size="10">Inbound Port — ShipmentService(Impl)</text>
+
+    <rect x="270" y="514" width="260" height="30" fill="#ffe8d6" stroke="#e07b39"/>
+    <text x="400" y="533" text-anchor="middle" font-size="10">Outbound Port — ShipmentRepositoryPort</text>
+
+    <rect x="270" y="552" width="260" height="30" fill="#dde9ff" stroke="#3b6fd6"/>
+    <text x="400" y="571" text-anchor="middle" font-size="10">Outbound Adapter — InMemoryShipmentRepository</text>
+
+    <rect x="270" y="590" width="260" height="40" fill="#f1f1f1" stroke="#888"/>
+    <text x="400" y="606" text-anchor="middle" font-size="10.5" font-weight="bold">STATE</text>
+    <text x="400" y="621" text-anchor="middle" font-size="9.5" fill="#444">In-memory array — NOT persisted, no DB</text>
+
+    <text x="400" y="647" text-anchor="middle" font-size="9" fill="#777">Aggregate: Shipment (PENDING → CONFIRMED →</text>
+    <text x="400" y="659" text-anchor="middle" font-size="9" fill="#777">IN_TRANSIT → DELIVERED / CANCELLED)</text>
+  </g>
+
+  <!-- Mission Service -->
+  <g>
+    <rect x="565" y="352" width="290" height="410" rx="6" fill="#eaf7ee" stroke="#2f9e44" stroke-width="1.5"/>
+    <text x="710" y="374" text-anchor="middle" font-size="13" font-weight="bold" fill="#1b5e20">MISSION SERVICE</text>
+    <text x="710" y="390" text-anchor="middle" font-size="10" fill="#333">(Node/Express, Port 3003)</text>
+
+    <rect x="580" y="402" width="260" height="26" fill="#fff3cd" stroke="#c9a227"/>
+    <text x="710" y="419" text-anchor="middle" font-size="10.5" font-weight="bold">POST /missions · PATCH /missions/:id/complete</text>
+
+    <rect x="580" y="438" width="260" height="30" fill="#dde9ff" stroke="#3b6fd6"/>
+    <text x="710" y="457" text-anchor="middle" font-size="10">Inbound Adapter — MissionController</text>
+
+    <rect x="580" y="476" width="260" height="30" fill="#ffe8d6" stroke="#e07b39"/>
+    <text x="710" y="495" text-anchor="middle" font-size="10">Inbound Port — MissionService(Impl)</text>
+
+    <rect x="580" y="514" width="260" height="30" fill="#ffe8d6" stroke="#e07b39"/>
+    <text x="710" y="533" text-anchor="middle" font-size="10">Outbound Port — MissionRepositoryPort</text>
+
+    <rect x="580" y="552" width="260" height="30" fill="#dde9ff" stroke="#3b6fd6"/>
+    <text x="710" y="571" text-anchor="middle" font-size="10">Outbound Adapter — InMemoryMissionRepository</text>
+
+    <rect x="580" y="590" width="260" height="40" fill="#f1f1f1" stroke="#888"/>
+    <text x="710" y="606" text-anchor="middle" font-size="10.5" font-weight="bold">STATE</text>
+    <text x="710" y="621" text-anchor="middle" font-size="9.5" fill="#444">In-memory arrays (missions, drones) — no DB</text>
+
+    <text x="710" y="647" text-anchor="middle" font-size="9" fill="#777">Aggregate: Mission · Entity: Drone (fleet)</text>
+    <text x="710" y="659" text-anchor="middle" font-size="9" fill="#777">Owns drone selection + route computation</text>
+  </g>
+
+  <!-- Tracking Service -->
+  <g>
+    <rect x="875" y="352" width="290" height="410" rx="6" fill="#eaf7ee" stroke="#2f9e44" stroke-width="1.5"/>
+    <text x="1020" y="374" text-anchor="middle" font-size="13" font-weight="bold" fill="#1b5e20">TRACKING SERVICE</text>
+    <text x="1020" y="390" text-anchor="middle" font-size="10" fill="#333">(Node/Express, Port 3002)</text>
+
+    <rect x="890" y="402" width="260" height="26" fill="#fff3cd" stroke="#c9a227"/>
+    <text x="1020" y="419" text-anchor="middle" font-size="10.5" font-weight="bold">GET /track/:id · POST /track/:id/events</text>
+
+    <rect x="890" y="438" width="260" height="30" fill="#dde9ff" stroke="#3b6fd6"/>
+    <text x="1020" y="457" text-anchor="middle" font-size="10">Inbound Adapter — TrackingController</text>
+
+    <rect x="890" y="476" width="260" height="30" fill="#ffe8d6" stroke="#e07b39"/>
+    <text x="1020" y="495" text-anchor="middle" font-size="10">Inbound Port — TrackingService(Impl)</text>
+
+    <rect x="890" y="514" width="260" height="30" fill="#ffe8d6" stroke="#e07b39"/>
+    <text x="1020" y="533" text-anchor="middle" font-size="10">Outbound Port — TrackingRepositoryPort</text>
+
+    <rect x="890" y="552" width="260" height="30" fill="#dde9ff" stroke="#3b6fd6"/>
+    <text x="1020" y="571" text-anchor="middle" font-size="10">Outbound Adapter — InMemoryTrackingRepository</text>
+
+    <rect x="890" y="590" width="260" height="40" fill="#f1f1f1" stroke="#888"/>
+    <text x="1020" y="606" text-anchor="middle" font-size="10.5" font-weight="bold">STATE</text>
+    <text x="1020" y="621" text-anchor="middle" font-size="9.5" fill="#444">In-memory object — NOT persisted, no DB</text>
+
+    <text x="1020" y="647" text-anchor="middle" font-size="9" fill="#777">Aggregate: TrackingRecord (append-only</text>
+    <text x="1020" y="659" text-anchor="middle" font-size="9" fill="#777">TrackingEvent log — never mutated)</text>
+  </g>
+
+  <rect x="255" y="677" width="910" height="70" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="1.3"/>
+  <text x="710" y="696" text-anchor="middle" font-size="11" font-weight="bold" fill="#8a2418">
+    ⚠ No service-to-service calls exist in this prototype — none, in either direction
+  </text>
+  <text x="710" y="713" text-anchor="middle" font-size="10" fill="#5a1c12">
+    order-service, mission-service, and tracking-service NEVER call each other directly. The client shown
+  </text>
+  <text x="710" y="728" text-anchor="middle" font-size="10" fill="#5a1c12">
+    above is what actually carries shipmentId/droneId between them, one explicit call at a time.
+  </text>
+  <text x="710" y="742" text-anchor="middle" font-size="10" fill="#5a1c12">
+    See 02-design.md §4.1–4.2 for the full sequence diagram of this exact flow.
+  </text>
+
+  <!-- Communication style note -->
+  <text x="710" y="770" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#333">
+    Communication style: synchronous REST/JSON only — no event broker (Kafka) in this prototype (see §4.4)
+  </text>
+
+  <!-- ============ LEFT SIDE: Clients / Swagger / Frontend ============ -->
+  <g>
+    <circle cx="60" cy="372" r="20" fill="#ffe0b2" stroke="#e07b39"/>
+    <text x="60" y="407" text-anchor="middle" font-size="10">USER</text>
+    <text x="60" y="419" text-anchor="middle" font-size="10">CLIENTS</text>
+  </g>
+
+  <rect x="20" y="447" width="150" height="90" rx="6" fill="#dbe9ff" stroke="#3b6fd6" stroke-width="1.5"/>
+  <text x="95" y="467" text-anchor="middle" font-size="10" font-weight="bold">SWAGGER UI</text>
+  <text x="95" y="482" text-anchor="middle" font-size="9">CONTAINER</text>
+  <text x="95" y="497" text-anchor="middle" font-size="9">(Port 8080)</text>
+  <text x="95" y="514" text-anchor="middle" font-size="8.5" fill="#555">API docs only —</text>
+  <text x="95" y="526" text-anchor="middle" font-size="8.5" fill="#555">read-only reference</text>
+
+  <rect x="20" y="552" width="150" height="100" rx="6" fill="#d6ecff" stroke="#1f7ecb" stroke-width="1.5"/>
+  <text x="95" y="572" text-anchor="middle" font-size="10" font-weight="bold">FRONTEND WEB APP</text>
+  <text x="95" y="586" text-anchor="middle" font-size="9">(React+Vite, Port 5173)</text>
+  <rect x="35" y="595" width="120" height="20" fill="#fff3cd" stroke="#c9a227"/>
+  <text x="95" y="609" text-anchor="middle" font-size="8.5">LIVING DOC (App.jsx)</text>
+  <text x="95" y="630" text-anchor="middle" font-size="8" fill="#555">Only calls order-service</text>
+  <text x="95" y="642" text-anchor="middle" font-size="8" fill="#555">POST /shipments — nothing else</text>
+
+  <text x="95" y="682" text-anchor="middle" font-size="9" fill="#333">Docker Compose Orchestration</text>
+  <circle cx="60" cy="712" r="18" fill="#e3f2fd" stroke="#1f7ecb"/>
+  <text x="60" y="737" text-anchor="middle" font-size="9">USER CLIENTS</text>
+
+  <line x1="80" y1="372" x2="95" y2="447" stroke="#333" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="170" y1="492" x2="253" y2="410" stroke="#333" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="170" y1="592" x2="253" y2="410" stroke="#333" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- Swagger UI can also "Try it out" directly against mission-service and tracking-service,
+       since openapi.yaml documents all 3 services' endpoints — unlike the frontend, which
+       (per the actual App.jsx code) only ever calls order-service. -->
+  <path d="M 170 470 C 400 500, 480 430, 563 405" fill="none" stroke="#3b6fd6" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrowBlue)"/>
+  <text x="330" y="500" font-size="7.5" fill="#3b6fd6" text-anchor="middle">Try it out (docs only)</text>
+
+  <path d="M 170 465 C 500 520, 700 460, 873 405" fill="none" stroke="#3b6fd6" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrowBlue)"/>
+  <text x="520" y="530" font-size="7.5" fill="#3b6fd6" text-anchor="middle">Try it out (docs only)</text>
+
+  <!-- Legend -->
+  <rect x="255" y="875" width="910" height="70" rx="6" fill="#fafafa" stroke="#ccc"/>
+  <text x="270" y="895" font-size="10" font-weight="bold">Legend:</text>
+  <rect x="330" y="885" width="14" height="12" fill="#dde9ff" stroke="#3b6fd6"/>
+  <text x="350" y="895" font-size="9">Adapter (inbound/outbound)</text>
+  <rect x="330" y="902" width="14" height="12" fill="#ffe8d6" stroke="#e07b39"/>
+  <text x="350" y="912" font-size="9">Port (interface)</text>
+  <line x1="580" y1="891" x2="610" y2="891" stroke="#c0392b" stroke-width="1.6" marker-end="url(#arrowRed)"/>
+  <text x="618" y="895" font-size="9">Call made BY the external client TO one service (never service-to-service)</text>
+  <rect x="580" y="900" width="14" height="12" fill="#f1f1f1" stroke="#888"/>
+  <text x="600" y="910" font-size="9">In-memory state (no persistence, no DB)</text>
+  <line x1="850" y1="891" x2="875" y2="891" stroke="#3b6fd6" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrowBlue)"/>
+  <text x="882" y="895" font-size="8">Swagger "Try it out" — reaches any documented service; frontend does NOT (order-service only)</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#333"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#c0392b"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#3b6fd6"/>
+    </marker>
+  </defs>
+</svg>

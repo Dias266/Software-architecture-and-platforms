@@ -1,5 +1,3 @@
-Here is the raw Markdown text ready for you to copy and paste:
-
 # ✈️ Shipping on the Air
 
 > Autonomous drone package delivery platform — Assignment #01
@@ -21,15 +19,13 @@ Here is the raw Markdown text ready for you to copy and paste:
 The platform applies **Domain-Driven Design (DDD)** principles to orchestrate decentralized, event-driven microservices.
 
 ---
-<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/39069067-e8dc-4d28-bb1c-f91a77bba045" />
-
+<img width="1400" height="880" alt="Overall Architecture Blueprint: Shipping on the Air (DDD + Microservices + RESTful HTTP)" src="./docs/diagrams/architecture-blueprint-a1.svg" />
 
 <img width="1404" height="900" alt="image" src="https://github.com/user-attachments/assets/3db8e8ce-5d8f-4fa1-84a9-fd6bfe09d6b6" />
 
-
 <img width="922" height="535" alt="22" src="https://github.com/user-attachments/assets/d149a003-967d-40be-993f-3237b0e64702" />
 
-<img width="1024" height="640" alt="05e5ac70-baee-47a7-8c43-cb6e477698b7" src="https://github.com/user-attachments/assets/28ca1e7f-6076-4ad8-bec5-7109005643bb" />
+<img width="1500" height="920" alt="UML Class Diagram: Hexagonal Architecture of Shipping on the Air" src="./docs/diagrams/uml-class-diagram-a1.svg" />
 
 
 
@@ -107,6 +103,23 @@ the full rationale and the documented path toward event-driven integration.
 
 ---
 
+## 📐 Diagrams
+
+Visual reference material — UML structure, domain model, sequence, and use cases —
+kept in [`docs/diagrams/`](./docs/diagrams/):
+
+| Diagram | File | Shows |
+| --- | --- | --- |
+| UML Class Diagram | [`uml-class-diagram-a1.svg`](./docs/diagrams/uml-class-diagram-a1.svg) | Hexagonal structure (Controller → Port → Impl → Repository Port → Adapter) for all 3 services |
+| UML Domain Model | [`uml-domain-model-a1.svg`](./docs/diagrams/uml-domain-model-a1.svg) | Aggregates, entities, and value objects per bounded context (§3 tactical design) |
+| Sequence Diagram | [`sequence-diagram-a1.svg`](./docs/diagrams/sequence-diagram-a1.svg) | The actual, current shipment lifecycle — every step is client-triggered (see §4.1 in `02-design.md`) |
+| Use Case Diagram | [`use-case-diagram-a1.svg`](./docs/diagrams/use-case-diagram-a1.svg) | Customer / System Operator actors and the 9 use cases across all 3 services |
+
+Formal use case descriptions and user stories are in
+[`docs/user-stories-and-use-cases-a1.md`](./docs/user-stories-and-use-cases-a1.md).
+
+---
+
 ## 🧱 Internal Service Architecture
 
 On top of the microservices architecture above, **each of the three services is
@@ -138,6 +151,8 @@ interface), never on a concrete implementation directly. This keeps each service
 business logic swappable and unit-testable independently of Express or the in-memory
 store, and would allow, for example, `InMemoryShipmentRepository` to be replaced with
 a Postgres-backed implementation without touching the controller or use-case classes.
+
+See the UML Class Diagram above for a visual rendering of this exact table.
 
 ---
 
