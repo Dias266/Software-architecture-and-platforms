@@ -1,4 +1,4 @@
-# ✈️ Shipping on the Air — Assignment #02
+# Shipping on the Air Assignment #02
 ### Shipping on the Air with Patterns
 
 Refines the Assignment #01 prototype by applying six microservices patterns:
@@ -24,7 +24,11 @@ assignment-02/
 │   │   └── tests/             ← unit + integration tests
 │   ├── tracking-service/      ← cross-service CQRS read model
 │   └── mission-service/       ← drone fleet (health + metrics added)
-└── tests/e2e/                 ← end-to-end test through the gateway
+└── tests/e2e/                 ← end-to-end tests
+    ├── e2e.test.js             ← full journey through the gateway
+    ├── full-lifecycle.test.js  ← same journey hitting each service directly
+    ├── concurrent-load.test.js ← fleet-capacity contract under contention
+    └── logs/                   ← raw evidence from a stress-test run
 
 ```
 
@@ -78,5 +82,11 @@ cd ../../gateway && npm install
 npm run test:unit           # unit: circuit breaker state machine
 
 # e2e (needs docker compose up -d first)
-node --test tests/e2e/e2e.test.js
+node --test tests/e2e/e2e.test.js             # journey through the gateway
+node --test tests/e2e/full-lifecycle.test.js  # same journey, direct to each service
+node --test tests/e2e/concurrent-load.test.js # fleet-capacity contract under contention
 ```
+
+See [REPORT.md](./REPORT.md) for the full test strategy (test pyramid), UML
+diagrams (component/deployment, sequence, domain model, use cases) and user
+stories.
