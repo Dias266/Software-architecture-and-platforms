@@ -33,3 +33,4 @@ Re-engineers the shipment orchestration around **Apache Kafka** as event-driven 
 3. **#03 — scale the integration**: synchronous HTTP integration is replaced by an event log (Kafka); observability graduates into explicit SLOs; deployment graduates to Kubernetes.
 
 Each assignment folder is self-contained with its own README and `docker compose up --build`.
+# shipping-on-the-air-assignment-3-Full
