@@ -1,7 +1,7 @@
 ================================================================================
            DRONE DELIVERY PLATFORM - SINGLE ORDER E2E TEST SUITE
 ================================================================================
-Timestamp   : 2026-08-04T17:36:42.651Z
+Timestamp   : 2026-08-06T05:29:03.294Z
 Services    : Order Service (:3001) | Tracking Service (:3002) | Mission Service (:3003)
 Test File   : full_circle_round.test.js
 Environment : Node.js (v26.5.0) | Test Runner: Jest
@@ -10,47 +10,47 @@ Architecture: Microservices Ecosystem & Hexagonal Isolation
 --------------------------------------------------------------------------------
 1. TEST SUITE INITIALIZATION & SERVICE CONFIGURATION
 --------------------------------------------------------------------------------
-[17:36:42.651] INFO  [TestRunner] Initializing Jest runner context...
-[17:36:42.651] INFO  [TestRunner] Configured Order Service    -> http://localhost:3001
-[17:36:42.651] INFO  [TestRunner] Configured Tracking Service -> http://localhost:3002
-[17:36:42.651] INFO  [TestRunner] Configured Mission Service  -> http://localhost:3003
+[05:29:03.294] INFO  [TestRunner] Initializing Jest runner context...
+[05:29:03.294] INFO  [TestRunner] Configured Order Service    -> http://localhost:3001
+[05:29:03.294] INFO  [TestRunner] Configured Tracking Service -> http://localhost:3002
+[05:29:03.294] INFO  [TestRunner] Configured Mission Service  -> http://localhost:3003
 
 --------------------------------------------------------------------------------
 2. TEST EXECUTION PHASES
 --------------------------------------------------------------------------------
 
-[17:36:42.653] DEBUG [OrderService] Creating new shipment order...
-[17:36:42.863] INFO  [OrderService] Shipment Created -> ID: SHP-2B1263
-[17:36:42.863] PASS  [Test] 1. Initialize Order (POST /shipments @:3001)
-[17:36:42.864] DEBUG [TrackingService] Appending ORDER_PLACED event for SHP-2B1263...
-[17:36:42.928] FAIL  [Test] 2. Initialize Tracking Timeline (POST /track/:id/events @:3002)
-  --> Error: Request failed with status code 404
-[17:36:42.933] DEBUG [MissionService] Allocating drone for shipment SHP-2B1263...
-[17:36:43.153] INFO  [MissionService] Mission Allocated -> ID: MSN-9C0D1B | Drone: DRN-ALPHA
-[17:36:43.154] PASS  [Test] 3. Trigger Mission Planning (POST /missions @:3003)
-[17:36:43.156] DEBUG [TrackingService] Linking Drone DRN-ALPHA to tracking record...
-[17:36:43.162] FAIL  [Test] 4. Update Tracking (Drone Assigned @:3002)
-  --> Error: Request failed with status code 404
-[17:36:43.167] DEBUG [TrackingService] Simulating waypoint update...
-[17:36:43.171] FAIL  [Test] 5. Simulate "En Route" Tracking Progress (POST /track/:id/events @:3002)
-  --> Error: Request failed with status code 404
-[17:36:43.174] DEBUG [MissionService] Completing flight mission MSN-9C0D1B...
-[17:36:43.179] FAIL  [Test] 6. Complete Mission Flight (PATCH /missions/:id/complete @:3003)
-  --> Error: Request failed with status code 404
-[17:36:43.183] DEBUG [OrderService] Updating shipment status for SHP-2B1263 to DELIVERED...
-[17:36:43.189] FAIL  [Test] 7. Update Shipment Status to Delivered (PATCH /shipments/:id/status @:3001)
-  --> Error: Request failed with status code 400
-[17:36:43.192] DEBUG [TrackingService] Finalizing tracking timeline...
-[17:36:43.196] FAIL  [Test] 8. Update Tracking Timeline Final (POST /track/:id/events @:3002)
-  --> Error: Request failed with status code 404
+[05:29:03.299] DEBUG [OrderService] Creating new shipment order...
+[05:29:03.401] INFO  [OrderService] Shipment Created -> ID: SHP-000F55
+[05:29:03.402] PASS  [Test] 1. Initialize Order (POST /shipments @:3001)
+[05:29:03.403] DEBUG [TrackingService] Appending ORDER_PLACED event for SHP-000F55...
+[05:29:03.470] INFO  [TrackingService] Tracking record initialized for SHP-000F55
+[05:29:03.471] PASS  [Test] 2. Initialize Tracking Timeline (POST /track/:id/events @:3002)
+[05:29:03.472] DEBUG [MissionService] Allocating drone for shipment SHP-000F55...
+[05:29:03.501] INFO  [MissionService] Mission Allocated -> ID: MSN-B55676 | Drone: DRN-12
+[05:29:03.502] PASS  [Test] 3. Trigger Mission Planning (POST /missions @:3003)
+[05:29:03.503] DEBUG [TrackingService] Linking Drone DRN-12 to tracking record...
+[05:29:03.508] INFO  [TrackingService] Drone assignment timeline event recorded.
+[05:29:03.509] PASS  [Test] 4. Update Tracking (Drone Assigned @:3002)
+[05:29:03.511] DEBUG [TrackingService] Simulating waypoint update...
+[05:29:03.519] INFO  [TrackingService] Waypoint reached event recorded (50% progress)
+[05:29:03.520] PASS  [Test] 5. Simulate "En Route" Tracking Progress (POST /track/:id/events @:3002)
+[05:29:03.521] DEBUG [MissionService] Completing flight mission MSN-B55676...
+[05:29:03.537] INFO  [MissionService] Mission MSN-B55676 completed. Drone DRN-12 released.
+[05:29:03.538] PASS  [Test] 6. Complete Mission Flight (PATCH /missions/:id/complete @:3003)
+[05:29:03.540] DEBUG [OrderService] Updating shipment status for SHP-000F55 to DELIVERED...
+[05:29:03.555] INFO  [OrderService] Shipment status updated to DELIVERED.
+[05:29:03.556] PASS  [Test] 7. Update Shipment Status to Delivered (PATCH /shipments/:id/status @:3001)
+[05:29:03.558] DEBUG [TrackingService] Finalizing tracking timeline...
+[05:29:03.564] INFO  [TrackingService] Final DELIVERED timeline event stored.
+[05:29:03.565] PASS  [Test] 8. Update Tracking Timeline Final (POST /track/:id/events @:3002)
 
 --------------------------------------------------------------------------------
 3. EXECUTION SUMMARY
 --------------------------------------------------------------------------------
-Test Results: 2 passed, 6 failed, 8 total
+Test Results: 8 passed, 0 failed, 8 total
 
 ================================================================================
-E2E LIFECYCLE VERIFICATION VERDICT: [ FAILED ]
+E2E LIFECYCLE VERIFICATION VERDICT: [ PASSED ]
 - Order Service    : Created & completed shipment state transitions.
 - Mission Service  : Assigned drone, executed flight mission & released resources.
 - Tracking Service : Maintained consistent timeline events from order to delivery.
